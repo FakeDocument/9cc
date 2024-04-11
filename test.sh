@@ -18,6 +18,6 @@ assert() {
 }
 
 assert 2 1+1
-assert 6 4+2
+assert 5 4+2-1
 
 echo OK
