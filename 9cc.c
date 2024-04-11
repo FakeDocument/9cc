@@ -8,7 +8,7 @@
 
 typedef enum
 {
-  TK_RECEVED, //記号
+  TK_RESERVED, //記号
   TK_NUM,     //数値
   TK_EOF
 } TokenKind;  //トークンの型
@@ -41,7 +41,7 @@ void error(char *fmt,...)
 */
 bool consume(char op)
 {
-  if(token->kind!=TK_RECEVED || token->str[0]!=op)
+  if(token->kind!=TK_RESERVED || token->str[0]!=op)
     return false;
   token=token->next;
   return true;
@@ -53,7 +53,7 @@ bool consume(char op)
 */
 void expect(char op)
 {
-  if(token->kind!=TK_RECEVED || token->str[0]!=op)
+  if(token->kind!=TK_RESERVED || token->str[0]!=op)
     error("%cではありません",op);
   token=token->next;
 }
@@ -99,7 +99,7 @@ Token* tokenizer(char *s){
     }
     if(*s=='+'||*s=='-')
     {
-      cur=new_token(TK_RECEVED,cur,s++);
+      cur=new_token(TK_RESERVED,cur,s++);
       continue;
     }
     if(isdigit(*s))
