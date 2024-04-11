@@ -92,6 +92,7 @@ Token* tokenizer(char *s){
   Token *cur=&head;
   while(*s)
   {
+    //printf(";%s\n",s);
     if(isspace(*s))
     {
       s++;
@@ -100,6 +101,7 @@ Token* tokenizer(char *s){
     if(*s=='+'||*s=='-')
     {
       cur=new_token(TK_RESERVED,cur,s++);
+      //printf(";%s\n",s);
       continue;
     }
     if(isdigit(*s))
@@ -138,8 +140,11 @@ int main(int argc, char **argv) {
       printf("  add rax, %d\n",expectNumber());
       continue;
     }
-    expect('-');
-    printf("  sub rax, %d\n",expectNumber());
+    if(consume('-'))
+    {
+      printf("  sub rax, %d\n",expectNumber());
+      continue;
+    }
   }
 
   printf("  ret\n");
