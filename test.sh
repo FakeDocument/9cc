@@ -17,7 +17,8 @@ assert() {
     fi
 }
 
-assert 2 1+1
-assert 5 4+2-1
+echo テスト開始
+assert 2 "1+1"
+assert 5 " 4 + 2 - 1"
 
 echo OK
