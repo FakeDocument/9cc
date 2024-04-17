@@ -114,7 +114,8 @@ Token* tokenizer(char *s){
       s++;
       continue;
     }
-    if(*s=='+'||*s=='-')
+    if(*s=='+'||*s=='-'||*s=='*'||*s=='/'||
+      *s=='('||*s==')')
     {
       cur=new_token(TK_RESERVED,cur,s++);
       //printf(";%s\n",s);
@@ -137,7 +138,9 @@ typedef enum
 {
   ND_NUM,
   ND_ADD,
-  ND_SUB
+  ND_SUB,
+  ND_MUL,
+  ND_DIV
 } NodeKind;
 
 typedef struct Node Node;
@@ -165,27 +168,60 @@ Node* newNodeNum(int val)
   return node;
 }
 /*
+1+2*(3+4)-5
 EBNF
-expr=num('+'num | '-'num)*
+expr=mul('+'mul | '-'mul)*
 */
+Node* mul();
+Node* primary();
 Node* expr()
 {
-  Node *node=newNodeNum(expectNumber());
+  Node *node=mul();
   while(1)
   {
     if(consume('+'))
     {
-      node=newNode(ND_ADD,node,newNodeNum(expectNumber()));
+      node=newNode(ND_ADD,node,mul());
     }
     else if(consume('-'))
     {
-      node=newNode(ND_SUB,node,newNodeNum(expectNumber()));
+      node=newNode(ND_SUB,node,mul());
     }
     else
     {
       return node;
     }
   }
+}
+
+//mul=primary('*'primary | '/'primary)*
+Node* mul()
+{
+  Node *node=primary();
+  if(consume('*'))
+  {
+    node=newNode(ND_MUL,node,primary());
+  }
+  else if (consume('/'))
+  {
+    node=newNode(ND_DIV,node,primary());
+  }
+  else
+  {
+    return node;
+  }
+  
+}
+
+//primary=num|'('expr')'
+Node* primary()
+{
+  if(consume('(')){
+    Node* node=expr();
+    expect(')'); //)は閉じないとおかしい
+    return node;
+  }
+  return newNodeNum(expectNumber());
 }
 
 void gen(Node* node)
@@ -208,6 +244,13 @@ void gen(Node* node)
       break;
     case ND_SUB:
       printf("  sub rax, rdi\n");
+      break;
+    case ND_MUL:
+      printf("  imul rax, rdi\n");
+      break;
+    case ND_DIV:
+      printf("  cqo\n");
+      printf("  idiv rdi\n");
       break;
   }
   printf("  push rax\n");
