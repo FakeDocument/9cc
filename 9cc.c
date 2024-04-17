@@ -133,6 +133,86 @@ Token* tokenizer(char *s){
 }
 
 
+typedef enum
+{
+  ND_NUM,
+  ND_ADD,
+  ND_SUB
+} NodeKind;
+
+typedef struct Node Node;
+struct Node
+{
+  NodeKind kind;
+  Node *left,*right;
+  int val;
+};
+
+Node* newNode(NodeKind kind,Node *left,Node *right)
+{
+  Node *node=calloc(1,sizeof(Node));
+  node->kind=kind;
+  node->left=left;
+  node->right=right;
+  return node;
+}
+
+Node* newNodeNum(int val)
+{
+  Node *node=calloc(1,sizeof(Node));
+  node->kind=ND_NUM;
+  node->val=val;
+  return node;
+}
+/*
+EBNF
+expr=num('+'num | '-'num)*
+*/
+Node* expr()
+{
+  Node *node=newNodeNum(expectNumber());
+  while(1)
+  {
+    if(consume('+'))
+    {
+      node=newNode(ND_ADD,node,newNodeNum(expectNumber()));
+    }
+    else if(consume('-'))
+    {
+      node=newNode(ND_SUB,node,newNodeNum(expectNumber()));
+    }
+    else
+    {
+      return node;
+    }
+  }
+}
+
+void gen(Node* node)
+{
+  if(node->kind==ND_NUM)
+  {
+    printf("  push %d\n",node->val);
+    return;
+  }
+  gen(node->left);
+  gen(node->right);
+
+  printf("  pop rdi\n");
+  printf("  pop rax\n");
+
+  switch(node->kind)
+  {
+    case ND_ADD:
+      printf("  add rax, rdi\n");
+      break;
+    case ND_SUB:
+      printf("  sub rax, rdi\n");
+      break;
+  }
+  printf("  push rax\n");
+}
+
 
 int main(int argc, char **argv) {
   if (argc != 2) {
@@ -143,28 +223,14 @@ int main(int argc, char **argv) {
   char *p = argv[1];
   //printf("%s",p);
   token=tokenizer(p);
-
+  Node* node=expr();
   printf(".intel_syntax noprefix\n");
   printf(".globl main\n");
   printf("main:\n");
-  //式の最初は数字なので数字であることをチェックし出力
-  printf("  mov rax, %d\n", expectNumber());
+  
+  gen(node);
 
-
-  while (!atEOF()) 
-  {
-    if(consume('+'))
-    {
-      printf("  add rax, %d\n",expectNumber());
-      continue;
-    }
-    if(consume('-'))
-    {
-      printf("  sub rax, %d\n",expectNumber());
-      continue;
-    }
-  }
-
+  printf("  pop rax\n");
   printf("  ret\n");
   return 0;
 }
