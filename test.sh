@@ -21,4 +21,6 @@ echo テスト開始
 assert 6 "3*2"
 assert 7 " 4 + (2 - 1)*3"
 assert 3 "6/3+1"
+assert 1 "-1+2"
+assert 2 "+3-1"
 echo OK
