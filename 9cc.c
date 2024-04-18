@@ -173,6 +173,7 @@ EBNF
 expr=mul('+'mul | '-'mul)*
 */
 Node* mul();
+Node* unary();
 Node* primary();
 Node* expr()
 {
@@ -194,23 +195,36 @@ Node* expr()
   }
 }
 
-//mul=primary('*'primary | '/'primary)*
+//mul=unary('*'unary | '/'unary)*
 Node* mul()
 {
-  Node *node=primary();
+  Node *node=unary();
   if(consume('*'))
   {
-    node=newNode(ND_MUL,node,primary());
+    node=newNode(ND_MUL,node,unary());
   }
   else if (consume('/'))
   {
-    node=newNode(ND_DIV,node,primary());
+    node=newNode(ND_DIV,node,unary());
   }
   else
   {
     return node;
   }
-  
+}
+
+//unary=('+'|'-')?primary
+Node* unary()
+{
+  if(consume('+'))
+  {
+    return primary();;
+  }
+  else if(consume('-'))
+  {
+    return newNode(ND_SUB,newNodeNum(0),primary());
+  }
+  return primary();;
 }
 
 //primary=num|'('expr')'
