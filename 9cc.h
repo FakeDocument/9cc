@@ -9,8 +9,9 @@
 
 typedef enum
 {
-  TK_RESERVED, //記号
-  TK_NUM,     //数値
+  TK_RESERVED,  //記号
+  TK_NUM,       //数値
+  TK_IDENT,     //識別子
   TK_EOF
 } TokenKind;  //トークンの型
 
@@ -19,14 +20,16 @@ typedef struct Token Token;
 typedef enum
 {
   ND_NUM,
-  ND_ADD,
-  ND_SUB,
-  ND_MUL,
-  ND_DIV,
-  ND_EQL,
-  ND_NEQL,
-  ND_LESS,
-  ND_LESS_THAN,
+  ND_LVAR,      // ローカル変数
+  ND_ADD,       // +
+  ND_SUB,       // -
+  ND_MUL,       // *
+  ND_DIV,       // /
+  ND_ASSIGN,    // =
+  ND_EQL,       // ==
+  ND_NEQL,      // !=
+  ND_LESS,      // <
+  ND_LESS_THAN, // <=
 } NodeKind;
 
 typedef struct Node Node;
@@ -61,13 +64,16 @@ Node* newNode(NodeKind kind, Node *left, Node *right);
 Node* newNodeNum(int val);
 
                     //優先度低
-Node* expr();       //expr=equality
+Node* program();    //stmt*　stmtの連なり
+Node* stmt();       //expr";" exprを;で区切ったもの   
+Node* expr();       //assign 
+Node* assign();     //equality ("="assign)? 右結合で=assignが続くかもね、みたいな
 Node* equality();   //relational ("==" relational | "!=" relational)*
 Node* relational(); //add ("<" add | "<=" add | ">" add | ">=" add)*
 Node* add();        //mul ("+" mul | "-" mul)*
 Node* mul();        //unary ("*" unary | "/" unary)*
 Node* unary();      //("+" |"-")? primary
-Node* primary();    //num|"("expr")"
+Node* primary();    //num|ident|"("expr")"
                     //優先度高
 
 void gen(Node* node);
