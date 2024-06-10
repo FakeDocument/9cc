@@ -27,6 +27,21 @@ bool consume(char* op)
 }
 
 /*
+次のトークンが変数の時はトークンを進めてTrue
+それ以外ならFalse
+*/
+bool consumeIdent()
+{
+  if(token->kind!=TK_IDENT)
+    {
+      return false;
+    }
+  token=token->next;
+  return true;
+}
+
+
+/*
 次のトークンが期待している記号の時はトークンを進める
 それ以外ならエラーを出す
 */
@@ -52,6 +67,19 @@ int expectNumber()
   int val=token->num;
   token=token->next;
   return val;
+}
+
+/*
+次のトークンが変数の場合、トークンを1つ読み進めてその変数を返す。
+それ以外の場合にはエラーを報告する。
+*/
+char* expectIdent()
+{
+  if(token->kind!=TK_IDENT)
+    errorAt(token->str,"変数ではありません");
+  char* ident=token->str;
+  token=token->next;
+  return ident;
 }
 
 bool atEOF()
@@ -110,9 +138,18 @@ Token* tokenizer(char *s){
       *s=='('||
       *s==')'||
       *s=='<'||
-      *s=='>')
+      *s=='>'||
+      *s==';')
     {
+      printf(";記号¥n");
       cur=newToken(TK_RESERVED,cur,s,1);
+      s++;
+      continue;
+    }
+
+    if('a'<=*s&&*s<='z')
+    {
+      cur=newToken(TK_IDENT,cur,s,1);
       s++;
       continue;
     }

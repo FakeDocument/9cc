@@ -32,11 +32,14 @@ typedef enum
   ND_LESS_THAN, // <=
 } NodeKind;
 
+
 typedef struct Node Node;
 
+//100文まで格納する
+extern Node *code[100];
 
 //ユーザーの入力した文字列
-extern char* userInput;
+//extern char* userInput;
 
 //エラー報告用関数。printfと同じ引数
 void error(char *fmt,...);
@@ -47,9 +50,13 @@ extern Token *token;
 
 bool consume(char* op);
 
+bool consumeIdent();
+
 void expect(char* op);
 
 int expectNumber();
+
+char* expectIdent();
 
 bool atEOF();
 
@@ -62,6 +69,7 @@ Token* tokenizer(char *s);
 Node* newNode(NodeKind kind, Node *left, Node *right);
 
 Node* newNodeNum(int val);
+Node* newNodeIdent(char* str);
 
                     //優先度低
 Node* program();    //stmt*　stmtの連なり
@@ -77,4 +85,7 @@ Node* primary();    //num|ident|"("expr")"
                     //優先度高
 
 void gen(Node* node);
+void genLval(Node* node);
+
+int main(int argc, char **argv);
 #endif

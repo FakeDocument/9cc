@@ -34,22 +34,29 @@ void errorAt(char *loc,char *fmt,...)
 }
 
 int main(int argc, char **argv) {
+  printf(";プログラム始動");
   if (argc != 2) {
     fprintf(stderr, "引数の個数が正しくありません\n");
     return 1;
   }
   userInput=argv[1];
-  char *p = argv[1];
   //printf("%s",p);
-  token=tokenizer(p);
-  //fprintf(stderr,"%s\n",token->str);
-  Node* node=expr();
+  tokenizer(userInput);
+  program();
   printf(".intel_syntax noprefix\n");
   printf(".globl main\n");
   printf("main:\n");
   
-  gen(node);
+  for(int i=0;code[i];i++){
+    gen(code[i]);
 
+    // 式の評価結果としてスタックに一つの値が残っている
+    // はずなので、スタックが溢れないようにポップしておく
+    printf("  pop rax\n");
+  }
+
+  //最後の指揮の結果がraxに残ってるらしい
+  printf("  mov rsp, rbp¥n");
   printf("  pop rax\n");
   printf("  ret\n");
   return 0;
