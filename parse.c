@@ -27,16 +27,15 @@ bool consume(char* op)
 }
 
 /*
-次のトークンが変数の時はトークンを進めてTrue
+次のトークンが変数の時はトークンを進めずTrue
 それ以外ならFalse
 */
-bool consumeIdent()
+bool peekIdent()
 {
   if(token->kind!=TK_IDENT)
     {
       return false;
     }
-  token=token->next;
   return true;
 }
 
@@ -51,7 +50,7 @@ void expect(char* op)
     strlen(op)!=token->len||
     memcmp(token->str,op,token->len))
     {
-      errorAt(token->str,"%cではありません\n%sです\n",op,token->str);
+      errorAt(token->str,"%sではありません\n%sです\n",op,token->str);
     }
   token=token->next;
 }
@@ -104,7 +103,6 @@ Token* tokenizer(char *s){
   Token *cur=&head;
   while(*s)
   {
-    //printf("; %s\n",s);
 
     if(isspace(*s))
     {
@@ -139,9 +137,9 @@ Token* tokenizer(char *s){
       *s==')'||
       *s=='<'||
       *s=='>'||
-      *s==';')
+      *s==';'||
+      *s=='=')
     {
-      printf(";記号¥n");
       cur=newToken(TK_RESERVED,cur,s,1);
       s++;
       continue;
@@ -149,6 +147,7 @@ Token* tokenizer(char *s){
 
     if('a'<=*s&&*s<='z')
     {
+      printf("#%s\n",s);
       cur=newToken(TK_IDENT,cur,s,1);
       s++;
       continue;

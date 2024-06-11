@@ -4,7 +4,7 @@ assert() {
     expected="$1"
     input="$2"
 
-    ./9cc "$input" 
+    ./9cc "$input" > tmp.s
     cc -o tmp tmp.s
     ./tmp
     actual="$?"
@@ -19,30 +19,30 @@ assert() {
 
 echo テスト開始
 assert 6 "3*2;"
-assert 6 "1*2*3"
-assert 7 " 4 + (2 - 1)*3"
-assert 3 "6/3+1"
-assert 1 "-1+2"
+assert 6 "1*2*3;"
+assert 7 " 4 + (2 - 1)*3;"
+assert 3 "6/3+1;"
+assert 1 "-1+2;"
 
-assert 1 "2==2"
-assert 0 "2==3"
-assert 1 "2!=3"
-assert 0 "2!=2"
+assert 1 "2==2;"
+assert 0 "2==3;"
+assert 1 "2!=3;"
+assert 0 "2!=2;"
 
-assert 1 "1<2"
-assert 0 "3<2"
+assert 1 "1<2;"
+assert 0 "3<2;"
 
-assert 0 "1>2"
-assert 1 "3>2"
+assert 0 "1>2;"
+assert 1 "3>2;"
 
-assert 1 "1<=1"
-assert 1 "1<=2"
-assert 0 "3<=2"
+assert 1 "1<=1;"
+assert 1 "1<=2;"
+assert 0 "3<=2;"
 
-assert 1 "1>=1"
-assert 1 "2>=1"
-assert 0 "2>=3"
+assert 1 "1>=1;"
+assert 1 "2>=1;"
+assert 0 "2>=3;"
 
-assert 4 "  a=1+1;
-            a*2;"
+assert 2 "a=1;b=2;a*b;"
+
 echo OK

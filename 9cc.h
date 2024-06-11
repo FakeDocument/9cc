@@ -48,9 +48,17 @@ void errorAt(char *loc,char *fmt,...);
 
 extern Token *token;
 
+/*
+次のトークンが期待している記号の時はトークンを進めてTrue
+それ以外ならFalse
+*/
 bool consume(char* op);
 
-bool consumeIdent();
+/*
+次のトークンが変数の時はトークンを進めずTrue
+それ以外ならFalse
+*/
+bool peekIdent();
 
 void expect(char* op);
 
@@ -72,7 +80,7 @@ Node* newNodeNum(int val);
 Node* newNodeIdent(char* str);
 
                     //優先度低
-Node* program();    //stmt*　stmtの連なり
+void program();    //stmt*　stmtの連なり
 Node* stmt();       //expr";" exprを;で区切ったもの   
 Node* expr();       //assign 
 Node* assign();     //equality ("="assign)? 右結合で=assignが続くかもね、みたいな
@@ -87,5 +95,7 @@ Node* primary();    //num|ident|"("expr")"
 void gen(Node* node);
 void genLval(Node* node);
 
+extern char* userInput;
+extern Token *token;
 int main(int argc, char **argv);
 #endif

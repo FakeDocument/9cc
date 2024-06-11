@@ -34,19 +34,24 @@ void errorAt(char *loc,char *fmt,...)
 }
 
 int main(int argc, char **argv) {
-  printf(";プログラム始動");
   if (argc != 2) {
     fprintf(stderr, "引数の個数が正しくありません\n");
     return 1;
   }
   userInput=argv[1];
   //printf("%s",p);
-  tokenizer(userInput);
+  token=tokenizer(userInput);
   program();
   printf(".intel_syntax noprefix\n");
   printf(".globl main\n");
   printf("main:\n");
   
+  // プロローグ
+  // 変数26個分の領域を確保する
+  printf("  push rbp\n");
+  printf("  mov rbp, rsp\n");
+  printf("  sub rsp, 208\n");
+
   for(int i=0;code[i];i++){
     gen(code[i]);
 
@@ -56,8 +61,8 @@ int main(int argc, char **argv) {
   }
 
   //最後の指揮の結果がraxに残ってるらしい
-  printf("  mov rsp, rbp¥n");
-  printf("  pop rax\n");
+  printf("  mov rsp, rbp\n");
+  printf("  pop rbp\n");
   printf("  ret\n");
   return 0;
 }
