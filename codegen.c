@@ -2,6 +2,28 @@
 
 Node *code[100];
 
+/*ローカル変数*/
+struct LoVar{
+  LoVar* next;
+  char* str;
+  int len;
+  int offset;
+};
+
+/*ローカル変数の先頭ポインタ*/
+LoVar* loVarList;
+
+LoVar* findLoVar(Token* tkn){
+    for(LoVar* crnt=loVarList;crnt;crnt=crnt->next)
+    {
+        if(memcmp(tkn->str,crnt->str,crnt->len)){
+            return crnt;
+        }
+        crnt=crnt->next;
+    }
+    return NULL;
+}
+
 struct Node
 {
     NodeKind kind;
@@ -30,11 +52,21 @@ Node *newNodeNum(int val)
 /**
  * 変数のノードを作る
 */
-Node *newNodeIdent(char *str)
+Node *newNodeIdent(Token* tkn)
 {
     Node *node = (Node *)calloc(1, sizeof(Node));
     node->kind = ND_LVAR;
-    node->offset=(str[0]-'a'+1)*8;
+
+    LoVar* lovar=findLoVar(tkn);
+    if(!lovar)
+    {
+        lovar= (LoVar*)calloc(1, sizeof(LoVar));
+        lovar->len=tkn->len;
+        lovar->str=tkn->str;
+        lovar->offset=loVarList->offset+8;
+        loVarList->next=lovar;
+    }
+    node->offset=lovar->offset;
     return node;
 }
 

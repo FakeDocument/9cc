@@ -1,14 +1,5 @@
 #include "9cc.h"
 
-struct Token
-{
-  TokenKind kind;
-  Token *next;
-  int num;    //トークンが数値の場合、その数値
-  char *str;  //トークン文字列
-  unsigned int len;
-};
-
 /*
 次のトークンが期待している記号の時はトークンを進めてTrue
 それ以外ならFalse
@@ -72,13 +63,13 @@ int expectNumber()
 次のトークンが変数の場合、トークンを1つ読み進めてその変数を返す。
 それ以外の場合にはエラーを報告する。
 */
-char* expectIdent()
+Token* expectIdent()
 {
   if(token->kind!=TK_IDENT)
     errorAt(token->str,"変数ではありません");
-  char* ident=token->str;
+  Token* tkn=token;
   token=token->next;
-  return ident;
+  return tkn;
 }
 
 bool atEOF()
@@ -145,11 +136,20 @@ Token* tokenizer(char *s){
       continue;
     }
 
-    if('a'<=*s&&*s<='z')
+    //文字が入ったならば変数のはず
+    if(isalpha(*s))
     {
-      printf("#%s\n",s);
-      cur=newToken(TK_IDENT,cur,s,1);
-      s++;
+      //変数文字列の長さ
+      int len=1;
+      char* tmp=s;
+      //変数はアルファベットと数字で構成されているはずなので、その長さを記録する
+      while(!isalnum(*tmp))
+      {
+        len++;
+        tmp++;
+      }
+      cur=newToken(TK_IDENT,cur,s,len);
+      s+=len;
       continue;
     }
     errorAt(s,"トークナイズできません");

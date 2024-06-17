@@ -15,7 +15,15 @@ typedef enum
   TK_EOF
 } TokenKind;  //トークンの型
 
-typedef struct Token Token;
+struct TokenStruct
+{
+  TokenKind kind;
+  struct TokenStruct *next;
+  int num;    //トークンが数値の場合、その数値
+  char *str;  //トークン文字列
+  unsigned int len;
+} ;
+typedef struct TokenStruct Token;
 
 typedef enum
 {
@@ -32,7 +40,7 @@ typedef enum
   ND_LESS_THAN, // <=
 } NodeKind;
 
-
+typedef struct LoVar LoVar;
 typedef struct Node Node;
 
 //100文まで格納する
@@ -64,7 +72,7 @@ void expect(char* op);
 
 int expectNumber();
 
-char* expectIdent();
+Token* expectIdent();
 
 bool atEOF();
 
@@ -77,7 +85,7 @@ Token* tokenizer(char *s);
 Node* newNode(NodeKind kind, Node *left, Node *right);
 
 Node* newNodeNum(int val);
-Node* newNodeIdent(char* str);
+Node* newNodeIdent(Token* tkn);
 
                     //優先度低
 void program();    //stmt*　stmtの連なり
