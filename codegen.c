@@ -3,23 +3,26 @@
 Node *code[100];
 
 /*ローカル変数*/
-struct LoVar{
-  LoVar* next;
-  char* str;
-  int len;
-  int offset;
+struct LoVar
+{
+    LoVar *next;
+    char *str;
+    int len;
+    int offset;
 };
 
 /*ローカル変数の先頭ポインタ*/
-LoVar* loVarList;
+LoVar *loVarList;
 
-LoVar* findLoVar(Token* tkn){
-    for(LoVar* crnt=loVarList;crnt;crnt=crnt->next)
+LoVar *findLoVar(Token *tkn)
+{
+    for (LoVar *crnt = loVarList; crnt; crnt = crnt->next)
     {
-        if(memcmp(tkn->str,crnt->str,crnt->len)){
+        if (memcmp(tkn->str, crnt->str, crnt->len))
+        {
             return crnt;
         }
-        crnt=crnt->next;
+        crnt = crnt->next;
     }
     return NULL;
 }
@@ -28,8 +31,8 @@ struct Node
 {
     NodeKind kind;
     Node *left, *right;
-    int val;    //kindがND_NUMの場合のみ使う
-    int offset; //kindがND_LVARの場合のみ使う
+    int val;    // kindがND_NUMの場合のみ使う
+    int offset; // kindがND_LVARの場合のみ使う
 };
 
 Node *newNode(NodeKind kind, Node *left, Node *right)
@@ -51,65 +54,65 @@ Node *newNodeNum(int val)
 
 /**
  * 変数のノードを作る
-*/
-Node *newNodeIdent(Token* tkn)
+ */
+Node *newNodeIdent(Token *tkn)
 {
     Node *node = (Node *)calloc(1, sizeof(Node));
     node->kind = ND_LVAR;
 
-    LoVar* lovar=findLoVar(tkn);
-    if(!lovar)
+    LoVar *lovar = findLoVar(tkn);
+    if (!lovar)
     {
-        lovar= (LoVar*)calloc(1, sizeof(LoVar));
-        lovar->len=tkn->len;
-        lovar->str=tkn->str;
-        lovar->offset=loVarList->offset+8;
-        loVarList->next=lovar;
+        lovar = (LoVar *)calloc(1, sizeof(LoVar));
+        lovar->len = tkn->len;
+        lovar->str = tkn->str;
+        lovar->offset = loVarList->offset + 8;
+        loVarList->next = lovar;
     }
-    node->offset=lovar->offset;
+    node->offset = lovar->offset;
     return node;
 }
 
 void program()
 {
-    int i=0;
-    //EOFでなく、iが100未満でループ
-    while(!atEOF()&&i<100)
+    int i = 0;
+    // EOFでなく、iが100未満でループ
+    while (!atEOF() && i < 100)
     {
-        code[i++]=stmt();
+        code[i++] = stmt();
     }
-    code[i]=NULL;
+    code[i] = NULL;
 }
 
-//expr ";"
+// expr ";"
 Node *stmt()
 {
-    Node *node=expr();
+    Node *node = expr();
     expect(";");
     return node;
 }
 
-//assign
+// assign
 Node *expr()
 {
     return assign();
 }
 
-//equality ("=" assign)?
+// equality ("=" assign)?
 Node *assign()
 {
-    Node *node=equality();
-    if(consume("="))
+    Node *node = equality();
+    if (consume("="))
     {
-        node=newNode(ND_ASSIGN,node,assign());
+        node = newNode(ND_ASSIGN, node, assign());
     }
     return node;
 }
 
-//relational ("==" relational | "!=" relational)*
+// relational ("==" relational | "!=" relational)*
 Node *equality()
 {
-    //入れ替えがめんどくさかったから変数にまとめた
+    // 入れ替えがめんどくさかったから変数にまとめた
     Node *(*next)() = relational;
     Node *node = next();
     while (1)
@@ -229,7 +232,7 @@ Node *primary()
         expect(")"); //)は閉じないとおかしい
         return node;
     }
-    if(peekIdent())
+    if (peekIdent())
     {
         return newNodeIdent(expectIdent());
     }
@@ -238,27 +241,27 @@ Node *primary()
 
 void gen(Node *node)
 {
-    //終端生成
-    switch(node->kind)
+    // 終端生成
+    switch (node->kind)
     {
-        case ND_NUM:
-            printf("  push %d\n", node->val);
-            return;
-        case ND_LVAR:
-            genLval(node);
-            printf("  pop rax\n");
-            printf("  mov rax, [rax]\n");
-            printf("  push rax\n");
-            return;
-        case ND_ASSIGN:
-            genLval(node->left);
-            gen(node->right);
+    case ND_NUM:
+        printf("  push %d\n", node->val);
+        return;
+    case ND_LVAR:
+        genLval(node);
+        printf("  pop rax\n");
+        printf("  mov rax, [rax]\n");
+        printf("  push rax\n");
+        return;
+    case ND_ASSIGN:
+        genLval(node->left);
+        gen(node->right);
 
-            printf("  pop rdi\n");
-            printf("  pop rax\n");
-            printf("  mov [rax], rdi\n");
-            printf("  push rdi\n");
-            return;
+        printf("  pop rdi\n");
+        printf("  pop rax\n");
+        printf("  mov [rax], rdi\n");
+        printf("  push rdi\n");
+        return;
     }
     gen(node->left);
     gen(node->right);
@@ -309,11 +312,12 @@ void gen(Node *node)
     printf("  push rax\n");
 }
 
-void genLval(Node* node){
-    if(node->kind!=ND_LVAR)
+void genLval(Node *node)
+{
+    if (node->kind != ND_LVAR)
         error("代入の左辺値が変数ではありません");
-    
+
     printf("  mov rax, rbp\n");
-    printf("  sub rax, %d\n",node->offset);
+    printf("  sub rax, %d\n", node->offset);
     printf("  push rax\n");
 }

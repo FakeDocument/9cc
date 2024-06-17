@@ -9,20 +9,20 @@
 
 typedef enum
 {
-  TK_RESERVED,  //記号
-  TK_NUM,       //数値
-  TK_IDENT,     //識別子
+  TK_RESERVED, // 記号
+  TK_NUM,      // 数値
+  TK_IDENT,    // 識別子
   TK_EOF
-} TokenKind;  //トークンの型
+} TokenKind; // トークンの型
 
 struct TokenStruct
 {
   TokenKind kind;
   struct TokenStruct *next;
-  int num;    //トークンが数値の場合、その数値
-  char *str;  //トークン文字列
+  int num;   // トークンが数値の場合、その数値
+  char *str; // トークン文字列
   unsigned int len;
-} ;
+};
 typedef struct TokenStruct Token;
 
 typedef enum
@@ -43,16 +43,16 @@ typedef enum
 typedef struct LoVar LoVar;
 typedef struct Node Node;
 
-//100文まで格納する
+// 100文まで格納する
 extern Node *code[100];
 
-//ユーザーの入力した文字列
-//extern char* userInput;
+// ユーザーの入力した文字列
+// extern char* userInput;
 
-//エラー報告用関数。printfと同じ引数
-void error(char *fmt,...);
+// エラー報告用関数。printfと同じ引数
+void error(char *fmt, ...);
 
-void errorAt(char *loc,char *fmt,...);
+void errorAt(char *loc, char *fmt, ...);
 
 extern Token *token;
 
@@ -60,7 +60,7 @@ extern Token *token;
 次のトークンが期待している記号の時はトークンを進めてTrue
 それ以外ならFalse
 */
-bool consume(char* op);
+bool consume(char *op);
 
 /*
 次のトークンが変数の時はトークンを進めずTrue
@@ -68,42 +68,40 @@ bool consume(char* op);
 */
 bool peekIdent();
 
-void expect(char* op);
+void expect(char *op);
 
 int expectNumber();
 
-Token* expectIdent();
+Token *expectIdent();
 
 bool atEOF();
 
-Token* newToken(TokenKind kind, Token *cur, char *str, int len);
+Token *newToken(TokenKind kind, Token *cur, char *str, int len);
 
-Token* tokenizer(char *s);
+Token *tokenizer(char *s);
 
+Node *newNode(NodeKind kind, Node *left, Node *right);
 
+Node *newNodeNum(int val);
+Node *newNodeIdent(Token *tkn);
 
-Node* newNode(NodeKind kind, Node *left, Node *right);
+// 優先度低
+void program();     // stmt*　stmtの連なり
+Node *stmt();       // expr";" exprを;で区切ったもの
+Node *expr();       // assign
+Node *assign();     // equality ("="assign)? 右結合で=assignが続くかもね、みたいな
+Node *equality();   // relational ("==" relational | "!=" relational)*
+Node *relational(); // add ("<" add | "<=" add | ">" add | ">=" add)*
+Node *add();        // mul ("+" mul | "-" mul)*
+Node *mul();        // unary ("*" unary | "/" unary)*
+Node *unary();      //("+" |"-")? primary
+Node *primary();    // num|ident|"("expr")"
+                 // 優先度高
 
-Node* newNodeNum(int val);
-Node* newNodeIdent(Token* tkn);
+void gen(Node *node);
+void genLval(Node *node);
 
-                    //優先度低
-void program();    //stmt*　stmtの連なり
-Node* stmt();       //expr";" exprを;で区切ったもの   
-Node* expr();       //assign 
-Node* assign();     //equality ("="assign)? 右結合で=assignが続くかもね、みたいな
-Node* equality();   //relational ("==" relational | "!=" relational)*
-Node* relational(); //add ("<" add | "<=" add | ">" add | ">=" add)*
-Node* add();        //mul ("+" mul | "-" mul)*
-Node* mul();        //unary ("*" unary | "/" unary)*
-Node* unary();      //("+" |"-")? primary
-Node* primary();    //num|ident|"("expr")"
-                    //優先度高
-
-void gen(Node* node);
-void genLval(Node* node);
-
-extern char* userInput;
+extern char *userInput;
 extern Token *token;
 int main(int argc, char **argv);
 #endif
