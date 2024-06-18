@@ -44,5 +44,6 @@ assert 1 "2>=1;"
 assert 0 "2>=3;"
 
 assert 2 "a=1;b=2;a*b;"
+assert 2 "hoge=1;b=2;hoge*b;"
 
 echo OK
