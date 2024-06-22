@@ -14,7 +14,6 @@ LoVar *findLoVar(Token *tkn)
         {
             return crnt;
         }
-        crnt = crnt->next;
     }
     return NULL;
 }

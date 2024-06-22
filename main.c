@@ -41,6 +41,7 @@ int main(int argc, char **argv)
   loVarList->str="";
   loVarList->len=0;
   loVarList->offset=0;
+  loVarList->next=NULL;
 
   if (argc != 2)
   {
