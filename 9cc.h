@@ -40,8 +40,19 @@ typedef enum
   ND_LESS_THAN, // <=
 } NodeKind;
 
-typedef struct LoVar LoVar;
+/*ローカル変数*/
+struct LoVarStruct
+{
+    struct LoVarStruct *next;
+    char *str;
+    unsigned int len;
+    int offset;
+};
+typedef struct LoVarStruct LoVar;
 typedef struct Node Node;
+
+/*ローカル変数の先頭ポインタ*/
+extern LoVar *loVarList;
 
 // 100文まで格納する
 extern Node *code[100];

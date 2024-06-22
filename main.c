@@ -8,6 +8,7 @@
 
 char *userInput;
 Token *token;
+LoVar *loVarList;
 
 // エラー報告用関数。printfと同じ引数
 void error(char *fmt, ...)
@@ -35,6 +36,12 @@ void errorAt(char *loc, char *fmt, ...)
 
 int main(int argc, char **argv)
 {
+  loVarList=(LoVar *)calloc(1, sizeof(LoVar));
+  loVarList->next=NULL;
+  loVarList->str="";
+  loVarList->len=0;
+  loVarList->offset=0;
+
   if (argc != 2)
   {
     fprintf(stderr, "引数の個数が正しくありません\n");
@@ -52,7 +59,7 @@ int main(int argc, char **argv)
   // 変数26個分の領域を確保する
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
-  printf("  sub rsp, 208\n");
+  printf("  sub rsp, %d\n",loVarList->offset);
 
   for (int i = 0; code[i]; i++)
   {

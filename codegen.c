@@ -2,23 +2,15 @@
 
 Node *code[100];
 
-/*ローカル変数*/
-struct LoVar
-{
-    LoVar *next;
-    char *str;
-    int len;
-    int offset;
-};
-
-/*ローカル変数の先頭ポインタ*/
-LoVar *loVarList;
-
 LoVar *findLoVar(Token *tkn)
 {
+    if (!loVarList)
+    {
+        return NULL;
+    }
     for (LoVar *crnt = loVarList; crnt; crnt = crnt->next)
     {
-        if (memcmp(tkn->str, crnt->str, crnt->len))
+        if (tkn->len == crnt->len && memcmp(tkn->str, crnt->str, crnt->len))
         {
             return crnt;
         }
@@ -63,11 +55,14 @@ Node *newNodeIdent(Token *tkn)
     LoVar *lovar = findLoVar(tkn);
     if (!lovar)
     {
+        // 変数新規作成
         lovar = (LoVar *)calloc(1, sizeof(LoVar));
         lovar->len = tkn->len;
         lovar->str = tkn->str;
         lovar->offset = loVarList->offset + 8;
-        loVarList->next = lovar;
+
+        lovar->next = loVarList;
+        loVarList = lovar;
     }
     node->offset = lovar->offset;
     return node;

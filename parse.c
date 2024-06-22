@@ -140,10 +140,10 @@ Token *tokenizer(char *s)
     if (isalpha(*s))
     {
       // 変数文字列の長さ
-      int len = 1;
+      int len = 0;
       char *tmp = s;
       // 変数はアルファベットと数字で構成されているはずなので、その長さを記録する
-      while (!isalnum(*tmp))
+      while (isalnum(*tmp))
       {
         len++;
         tmp++;
