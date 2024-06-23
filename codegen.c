@@ -10,8 +10,8 @@ LoVar *findLoVar(Token *tkn)
     }
     for (LoVar *crnt = loVarList; crnt; crnt = crnt->next)
     {
-        printf("#crnt->str=%s\n",crnt->str);
-        printf("#len=%d\n",crnt->len);
+        DEBUG_PRINT("#crnt->str=%s\n",crnt->str);
+        DEBUG_PRINT("#len=%d\n",crnt->len);
         if (tkn->len == crnt->len && !memcmp(tkn->str, crnt->str, crnt->len))
         {
             return crnt;
@@ -53,9 +53,9 @@ Node *newNodeIdent(Token *tkn)
     Node *node = (Node *)calloc(1, sizeof(Node));
     node->kind = ND_LVAR;
 
-    printf("#変数：%s\n",tkn->str);
+    DEBUG_PRINT("#変数：%s\n",tkn->str);
     LoVar *lovar = findLoVar(tkn);
-    printf("#変数あったかな？：%s\n\n",lovar?"あった":"なかった");
+    DEBUG_PRINT("#変数あったかな？：%s\n\n",lovar?"あった":"なかった");
     if (!lovar)
     {
         // 変数新規作成
@@ -247,14 +247,14 @@ void gen(Node *node)
             return;
         case ND_LVAR:
             genLval(node);
-            printf("#変数ロード開始vvvv\n");
+            DEBUG_PRINT("#変数ロード開始vvvv\n");
             printf("  pop rax\n");
             printf("  mov rax, [rax]\n");
             printf("  push rax\n");
-            printf("#変数ロード完了^^^^\n");
+            DEBUG_PRINT("#変数ロード完了^^^^\n");
             return;
         case ND_ASSIGN:
-            printf("#代入開始\n");
+            DEBUG_PRINT("#代入開始\n");
             genLval(node->left);
             gen(node->right);
 
@@ -262,7 +262,7 @@ void gen(Node *node)
             printf("  pop rax\n");
             printf("  mov [rax], rdi\n");
             printf("  push rdi\n");
-            printf("#代入ここまで\n");
+            DEBUG_PRINT("#代入ここまで\n");
             return;
     }
     gen(node->left);
@@ -318,9 +318,9 @@ void genLval(Node *node)
 {
     if (node->kind != ND_LVAR)
         error("代入の左辺値が変数ではありません");
-    printf("#変数\n");
+    DEBUG_PRINT("#変数\n");
     printf("  mov rax, rbp\n");
     printf("  sub rax, %d\n", node->offset);
     printf("  push rax\n");
-    printf("#変数ここまで\n");
+    DEBUG_PRINT("#変数ここまで\n");
 }
