@@ -57,10 +57,12 @@ int main(int argc, char **argv)
   printf("main:\n");
 
   // プロローグ
-  // 変数26個分の領域を確保する
+  // 変数個分の領域を確保する
+  printf("#プロローグ\n");
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
   printf("  sub rsp, %d\n",loVarList->offset);
+  printf("#プロローグここまで\n");
 
   for (int i = 0; code[i]; i++)
   {
@@ -71,9 +73,11 @@ int main(int argc, char **argv)
     printf("  pop rax\n");
   }
 
-  // 最後の指揮の結果がraxに残ってるらしい
+  // 最後の式の結果がraxに残ってるらしい
+  printf("#エピローグ\n");
   printf("  mov rsp, rbp\n");
   printf("  pop rbp\n");
   printf("  ret\n");
+  printf("#エピローグここまで\n");
   return 0;
 }

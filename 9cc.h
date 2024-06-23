@@ -110,6 +110,9 @@ Node *primary();    // num|ident|"("expr")"
                  // 優先度高
 
 void gen(Node *node);
+/**
+ * gen_lvalは、与えられたノードが変数を指しているときに、その変数のアドレスを計算して、それをスタックにプッシュする
+ */
 void genLval(Node *node);
 
 extern char *userInput;
