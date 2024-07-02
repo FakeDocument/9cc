@@ -107,6 +107,13 @@ Token *tokenizer(char *s)
       cur->num = strtol(s, &s, 10);
       continue;
     }
+
+    if(strncmp(s,"return", 6)==0)
+    {
+      cur=newToken(TK_RETURN,cur,s,6);
+      s+=6;
+      continue;
+    }
     if (
         strncmp(s, "==", 2) == 0 ||
         strncmp(s, "!=", 2) == 0 ||
