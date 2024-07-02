@@ -116,7 +116,7 @@ Token *tokenizer(char *s)
       continue;
     }
 
-    if (strncmp(s, "return", 6) == 0)
+    if (strncmp(s, "return", 6) == 0 && !isAlNumBar(*s))
     {
       cur = newToken(TK_RETURN, cur, s, 6);
       s += 6;
