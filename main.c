@@ -36,12 +36,12 @@ void errorAt(char *loc, char *fmt, ...)
 
 int main(int argc, char **argv)
 {
-  loVarList=(LoVar *)calloc(1, sizeof(LoVar));
-  loVarList->next=NULL;
-  loVarList->str="";
-  loVarList->len=0;
-  loVarList->offset=0;
-  loVarList->next=NULL;
+  loVarList = (LoVar *)calloc(1, sizeof(LoVar));
+  loVarList->next = NULL;
+  loVarList->str = "";
+  loVarList->len = 0;
+  loVarList->offset = 0;
+  loVarList->next = NULL;
 
   if (argc != 2)
   {
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
   DEBUG_PRINT("#プロローグ\n");
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
-  printf("  sub rsp, %d\n",loVarList->offset);
+  printf("  sub rsp, %d\n", loVarList->offset);
   DEBUG_PRINT("#プロローグここまで\n");
 
   for (int i = 0; code[i]; i++)

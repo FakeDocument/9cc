@@ -116,10 +116,10 @@ Token *tokenizer(char *s)
       continue;
     }
 
-    if(strncmp(s,"return", 6)==0)
+    if (strncmp(s, "return", 6) == 0)
     {
-      cur=newToken(TK_RETURN,cur,s,6);
-      s+=6;
+      cur = newToken(TK_RETURN, cur, s, 6);
+      s += 6;
       continue;
     }
     if (
@@ -151,7 +151,7 @@ Token *tokenizer(char *s)
     }
 
     // 文字が入ったならば変数のはず
-    if (isalpha(*s)||*s=='_')
+    if (isalpha(*s) || *s == '_')
     {
       // 変数文字列の長さ
       int len = 0;

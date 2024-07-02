@@ -9,13 +9,16 @@
 
 #define DEBUG
 #ifdef DEBUG
-#define DEBUG_PRINT(fmt, ...) \
-    do { \
-        printf((fmt), ##__VA_ARGS__); \
-    } while (0)
+#define DEBUG_PRINT(fmt, ...)     \
+  do                              \
+  {                               \
+    printf((fmt), ##__VA_ARGS__); \
+  } while (0)
 #else
 #define DEBUG_PRINT(fmt, ...) \
-    do { } while (0)
+  do                          \
+  {                           \
+  } while (0)
 #endif
 
 typedef enum
@@ -55,10 +58,10 @@ typedef enum
 /*ローカル変数*/
 struct LoVarStruct
 {
-    struct LoVarStruct *next;
-    char *str;
-    unsigned int len;
-    int offset;
+  struct LoVarStruct *next;
+  char *str;
+  unsigned int len;
+  int offset;
 };
 typedef struct LoVarStruct LoVar;
 typedef struct Node Node;
@@ -121,7 +124,7 @@ Node *add();        // mul ("+" mul | "-" mul)*
 Node *mul();        // unary ("*" unary | "/" unary)*
 Node *unary();      //("+" |"-")? primary
 Node *primary();    // num|ident|"("expr")"
-                 // 優先度高
+                    // 優先度高
 
 void gen(Node *node);
 /**

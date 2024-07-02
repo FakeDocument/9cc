@@ -10,8 +10,8 @@ LoVar *findLoVar(Token *tkn)
     }
     for (LoVar *crnt = loVarList; crnt; crnt = crnt->next)
     {
-        DEBUG_PRINT("#crnt->str=%s\n",crnt->str);
-        DEBUG_PRINT("#len=%d\n",crnt->len);
+        DEBUG_PRINT("#crnt->str=%s\n", crnt->str);
+        DEBUG_PRINT("#len=%d\n", crnt->len);
         if (tkn->len == crnt->len && !memcmp(tkn->str, crnt->str, crnt->len))
         {
             return crnt;
@@ -53,9 +53,9 @@ Node *newNodeIdent(Token *tkn)
     Node *node = (Node *)calloc(1, sizeof(Node));
     node->kind = ND_LVAR;
 
-    DEBUG_PRINT("#変数：%s\n",tkn->str);
+    DEBUG_PRINT("#変数：%s\n", tkn->str);
     LoVar *lovar = findLoVar(tkn);
-    DEBUG_PRINT("#変数あったかな？：%s\n\n",lovar?"あった":"なかった");
+    DEBUG_PRINT("#変数あったかな？：%s\n\n", lovar ? "あった" : "なかった");
     if (!lovar)
     {
         // 変数新規作成
@@ -242,28 +242,28 @@ void gen(Node *node)
     // 終端生成
     switch (node->kind)
     {
-        case ND_NUM:
-            printf("  push %d\n", node->val);
-            return;
-        case ND_LVAR:
-            genLval(node);
-            DEBUG_PRINT("#変数ロード開始vvvv\n");
-            printf("  pop rax\n");
-            printf("  mov rax, [rax]\n");
-            printf("  push rax\n");
-            DEBUG_PRINT("#変数ロード完了^^^^\n");
-            return;
-        case ND_ASSIGN:
-            DEBUG_PRINT("#代入開始\n");
-            genLval(node->left);
-            gen(node->right);
+    case ND_NUM:
+        printf("  push %d\n", node->val);
+        return;
+    case ND_LVAR:
+        genLval(node);
+        DEBUG_PRINT("#変数ロード開始vvvv\n");
+        printf("  pop rax\n");
+        printf("  mov rax, [rax]\n");
+        printf("  push rax\n");
+        DEBUG_PRINT("#変数ロード完了^^^^\n");
+        return;
+    case ND_ASSIGN:
+        DEBUG_PRINT("#代入開始\n");
+        genLval(node->left);
+        gen(node->right);
 
-            printf("  pop rdi\n");
-            printf("  pop rax\n");
-            printf("  mov [rax], rdi\n");
-            printf("  push rdi\n");
-            DEBUG_PRINT("#代入ここまで\n");
-            return;
+        printf("  pop rdi\n");
+        printf("  pop rax\n");
+        printf("  mov [rax], rdi\n");
+        printf("  push rdi\n");
+        DEBUG_PRINT("#代入ここまで\n");
+        return;
     }
     gen(node->left);
     gen(node->right);
