@@ -23,7 +23,8 @@ typedef enum
   TK_RESERVED, // 記号
   TK_NUM,      // 数値
   TK_IDENT,    // 識別子
-  TK_EOF
+  TK_EOF,
+  TK_RETURN
 } TokenKind; // トークンの型
 
 struct TokenStruct
