@@ -76,6 +76,14 @@ bool atEOF()
   return token->kind == TK_EOF;
 }
 
+int isAlNumBar(char c)
+{
+  return ('a' <= c && c <= 'z') ||
+         ('A' <= c && c <= 'Z') ||
+         ('0' <= c && c <= '9') ||
+         (c == '_');
+}
+
 Token *newToken(TokenKind kind, Token *cur, char *str, int len)
 {
   Token *tkn = (Token *)calloc(1, sizeof(Token));

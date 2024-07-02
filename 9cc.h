@@ -99,6 +99,8 @@ Token *expectIdent();
 
 bool atEOF();
 
+bool isAlNumBar(char c);
+
 Token *newToken(TokenKind kind, Token *cur, char *str, int len);
 
 Token *tokenizer(char *s);
