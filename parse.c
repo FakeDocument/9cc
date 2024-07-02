@@ -76,7 +76,7 @@ bool atEOF()
   return token->kind == TK_EOF;
 }
 
-int isAlNumBar(char c)
+bool isAlNumBar(char c)
 {
   return ('a' <= c && c <= 'z') ||
          ('A' <= c && c <= 'Z') ||
