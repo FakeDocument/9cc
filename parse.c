@@ -107,15 +107,14 @@ Token *tokenizer(char *s)
       cur->num = strtol(s, &s, 10);
       continue;
     }
-    int len = 2;
     if (
-        strncmp(s, "==", len) == 0 ||
-        strncmp(s, "!=", len) == 0 ||
-        strncmp(s, "<=", len) == 0 ||
-        strncmp(s, ">=", len) == 0)
+        strncmp(s, "==", 2) == 0 ||
+        strncmp(s, "!=", 2) == 0 ||
+        strncmp(s, "<=", 2) == 0 ||
+        strncmp(s, ">=", 2) == 0)
     {
-      cur = newToken(TK_RESERVED, cur, s, len);
-      s += len;
+      cur = newToken(TK_RESERVED, cur, s, 2);
+      s += 2;
       continue;
     }
 
