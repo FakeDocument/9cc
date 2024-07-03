@@ -17,6 +17,16 @@ bool consume(char *op)
   return true;
 }
 
+bool consumeByTokenKind(TokenKind tk)
+{
+  if (token->kind != tk)
+  {
+    return false;
+  }
+  token = token->next;
+  return true;
+}
+
 /*
 次のトークンが変数の時はトークンを進めずTrue
 それ以外ならFalse
