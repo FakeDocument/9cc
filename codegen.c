@@ -82,10 +82,18 @@ void program()
     code[i] = NULL;
 }
 
-// expr ";"
+// "return" expr ";"| expr ";"
 Node *stmt()
 {
-    Node *node = expr();
+    Node *node;
+    if (consumeByTokenKind(TK_RETURN))
+    {
+        node = newNode(ND_RETURN, node, expr());
+    }
+    else
+    {
+        node = expr();
+    }
     expect(";");
     return node;
 }
