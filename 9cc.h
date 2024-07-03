@@ -88,6 +88,13 @@ extern Token *token;
 */
 bool consume(char *op);
 
+/**
+ * 次のトークンが期待しているトークン種の時は、トークンを勧めてTrue
+ * それ以外ならFalse
+ * @param TokenKind tk 期待するトークン種
+ */
+bool consumeByTokenKind(TokenKind tk);
+
 /*
 次のトークンが変数の時はトークンを進めずTrue
 それ以外ならFalse
