@@ -88,7 +88,7 @@ Node *stmt()
     Node *node;
     if (consumeByTokenKind(TK_RETURN))
     {
-        node = newNode(ND_RETURN, node, expr());
+        node = newNode(ND_RETURN, expr(), NULL);
     }
     else
     {
