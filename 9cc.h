@@ -44,6 +44,7 @@ typedef enum
 {
   ND_NUM,
   ND_LVAR,      // ローカル変数
+  ND_RETURN,    // return
   ND_ADD,       // +
   ND_SUB,       // -
   ND_MUL,       // *
