@@ -247,6 +247,15 @@ Node *primary()
 
 void gen(Node *node)
 {
+    if (node->kind == ND_RETURN)
+    {
+        gen(node->left);
+        printf("  pop rax\n");
+        printf("  mov rsp, rbp\n");
+        printf("  pop rbp\n");
+        printf("  ret\n");
+        return;
+    }
     // 終端生成
     switch (node->kind)
     {
