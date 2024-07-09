@@ -56,6 +56,15 @@ typedef enum
   ND_LESS_THAN, // <=
 } NodeKind;
 
+struct NodeStruct
+{
+  NodeKind kind;
+  struct NodeStruct *left, *right;
+  int val;    // kindがND_NUMの場合のみ使う
+  int offset; // kindがND_LVARの場合のみ使う
+};
+
+typedef struct NodeStruct Node;
 /*ローカル変数*/
 struct LoVarStruct
 {
@@ -65,7 +74,6 @@ struct LoVarStruct
   int offset;
 };
 typedef struct LoVarStruct LoVar;
-typedef struct Node Node;
 
 /*ローカル変数の先頭ポインタ*/
 extern LoVar *loVarList;

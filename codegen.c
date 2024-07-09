@@ -20,14 +20,6 @@ LoVar *findLoVar(Token *tkn)
     return NULL;
 }
 
-struct Node
-{
-    NodeKind kind;
-    Node *left, *right;
-    int val;    // kindがND_NUMの場合のみ使う
-    int offset; // kindがND_LVARの場合のみ使う
-};
-
 Node *newNode(NodeKind kind, Node *left, Node *right)
 {
     Node *node = (Node *)calloc(1, sizeof(Node));
@@ -82,7 +74,13 @@ void program()
     code[i] = NULL;
 }
 
-// "return" expr ";"| expr ";"
+/*
+    expr ";"|
+    "return" expr ";"|
+    "if" "(" expr ")" stmt ("else" stmt)?|
+    "while" "(" expr ")" stmt|
+    "for" "(" expr? ";" expr?";" expr? ")" stmt
+*/
 Node *stmt()
 {
     Node *node;
