@@ -44,7 +44,6 @@ typedef enum
 {
   ND_NUM,
   ND_LVAR,      // ローカル変数
-  ND_RETURN,    // return
   ND_ADD,       // +
   ND_SUB,       // -
   ND_MUL,       // *
@@ -54,6 +53,7 @@ typedef enum
   ND_NEQL,      // !=
   ND_LESS,      // <
   ND_LESS_THAN, // <=
+  ND_RETURN,    // return
 } NodeKind;
 
 struct NodeStruct
