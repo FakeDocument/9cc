@@ -132,6 +132,15 @@ Token *tokenizer(char *s)
       s += 6;
       continue;
     }
+    {
+      const int len = 2;
+      if (strncmp(s, "if", len) == 0 && !isAlNumBar(s[len]))
+      {
+        cur = newToken(TK_IF, cur, s, len);
+        s += len;
+        continue;
+      }
+    }
     if (
         strncmp(s, "==", 2) == 0 ||
         strncmp(s, "!=", 2) == 0 ||
