@@ -27,7 +27,10 @@ typedef enum
   TK_NUM,      // 数値
   TK_IDENT,    // 識別子
   TK_EOF,
-  TK_RETURN
+  TK_RETURN,
+  TK_IF,
+  TK_WHILE,
+  TK_FOR,
 } TokenKind; // トークンの型
 
 struct TokenStruct
@@ -54,6 +57,9 @@ typedef enum
   ND_LESS,      // <
   ND_LESS_THAN, // <=
   ND_RETURN,    // return
+  ND_IF,        // if
+  ND_WHILE,     // while
+  ND_FOR,       // for
 } NodeKind;
 
 struct NodeStruct
