@@ -181,3 +181,246 @@ Token *tokenizer(char *s)
   newToken(TK_EOF, cur, s, 1);
   return head.next;
 }
+
+Node *code[100];
+
+LoVar *findLoVar(Token *tkn)
+{
+  if (!loVarList)
+  {
+    return NULL;
+  }
+  for (LoVar *crnt = loVarList; crnt; crnt = crnt->next)
+  {
+    DEBUG_PRINT("#crnt->str=%s\n", crnt->str);
+    DEBUG_PRINT("#len=%d\n", crnt->len);
+    if (tkn->len == crnt->len && !memcmp(tkn->str, crnt->str, crnt->len))
+    {
+      return crnt;
+    }
+  }
+  return NULL;
+}
+
+Node *newNode(NodeKind kind, Node *left, Node *right)
+{
+  Node *node = (Node *)calloc(1, sizeof(Node));
+  node->kind = kind;
+  node->left = left;
+  node->right = right;
+  return node;
+}
+
+Node *newNodeNum(int val)
+{
+  Node *node = (Node *)calloc(1, sizeof(Node));
+  node->kind = ND_NUM;
+  node->val = val;
+  return node;
+}
+
+/**
+ * 変数のノードを作る
+ */
+Node *newNodeIdent(Token *tkn)
+{
+  Node *node = (Node *)calloc(1, sizeof(Node));
+  node->kind = ND_LVAR;
+
+  DEBUG_PRINT("#変数：%s\n", tkn->str);
+  LoVar *lovar = findLoVar(tkn);
+  DEBUG_PRINT("#変数あったかな？：%s\n\n", lovar ? "あった" : "なかった");
+  if (!lovar)
+  {
+    // 変数新規作成
+    lovar = (LoVar *)calloc(1, sizeof(LoVar));
+    lovar->len = tkn->len;
+    lovar->str = tkn->str;
+    lovar->offset = loVarList->offset + 8;
+
+    lovar->next = loVarList;
+    loVarList = lovar;
+  }
+  node->offset = lovar->offset;
+  return node;
+}
+
+void program()
+{
+  int i = 0;
+  // EOFでなく、iが100未満でループ
+  while (!atEOF() && i < 100)
+  {
+    code[i++] = stmt();
+  }
+  code[i] = NULL;
+}
+
+/*
+    expr ";"|
+    "return" expr ";"|
+    "if" "(" expr ")" stmt ("else" stmt)?|
+    "while" "(" expr ")" stmt|
+    "for" "(" expr? ";" expr?";" expr? ")" stmt
+*/
+Node *stmt()
+{
+  Node *node;
+  if (consumeByTokenKind(TK_RETURN))
+  {
+    node = newNode(ND_RETURN, expr(), NULL);
+  }
+  else
+  {
+    node = expr();
+  }
+  expect(";");
+  return node;
+}
+
+// assign
+Node *expr()
+{
+  return assign();
+}
+
+// equality ("=" assign)?
+Node *assign()
+{
+  Node *node = equality();
+  if (consume("="))
+  {
+    node = newNode(ND_ASSIGN, node, assign());
+  }
+  return node;
+}
+
+// relational ("==" relational | "!=" relational)*
+Node *equality()
+{
+  // 入れ替えがめんどくさかったから変数にまとめた
+  Node *(*next)() = relational;
+  Node *node = next();
+  while (1)
+  {
+    if (consume("=="))
+    {
+      node = newNode(ND_EQL, node, next());
+    }
+    else if (consume("!="))
+    {
+      node = newNode(ND_NEQL, node, next());
+    }
+    else
+    {
+      return node;
+    }
+  }
+}
+
+// add ("<" add | "<=" add | ">" add | ">=" add)*
+Node *relational()
+{
+  Node *(*next)() = add;
+  Node *node = next();
+  while (1)
+  {
+    if (consume(">="))
+    {
+      // アセンブリには以下の判定しかないため左右を入れ替える
+      node = newNode(ND_LESS_THAN, next(), node);
+    }
+    else if (consume("<="))
+    {
+      node = newNode(ND_LESS_THAN, node, next());
+    }
+    else if (consume(">"))
+    {
+      node = newNode(ND_LESS, next(), node);
+    }
+    else if (consume("<"))
+    {
+      node = newNode(ND_LESS, node, next());
+    }
+    else
+    {
+      return node;
+    }
+  }
+}
+
+// mul ("+" mul | "-" mul)*
+Node *add()
+{
+  Node *(*next)() = mul;
+  Node *node = next();
+  while (1)
+  {
+    if (consume("+"))
+    {
+      node = newNode(ND_ADD, node, next());
+    }
+    else if (consume("-"))
+    {
+      node = newNode(ND_SUB, node, next());
+    }
+    else
+    {
+      return node;
+    }
+  }
+}
+
+// mul=unary('*'unary | '/'unary)*
+Node *mul()
+{
+  Node *(*next)() = unary;
+  Node *node = next();
+  while (1)
+  {
+    if (consume("*"))
+    {
+      node = newNode(ND_MUL, node, next());
+    }
+    else if (consume("/"))
+    {
+      node = newNode(ND_DIV, node, next());
+    }
+    else
+    {
+      return node;
+    }
+  }
+}
+
+// 単項＋ー　unary=('+'|'-')?primary
+Node *unary()
+{
+  if (consume("+"))
+  {
+    return primary();
+    ;
+  }
+  else if (consume("-"))
+  {
+    return newNode(ND_SUB, newNodeNum(0), primary());
+  }
+  return primary();
+  ;
+}
+
+// primary=num|ident|'('expr')'
+Node *primary()
+{
+  if (consume("("))
+  {
+    Node *node = expr();
+    expect(")"); //)は閉じないとおかしい
+    return node;
+  }
+  if (peekIdent())
+  {
+    return newNodeIdent(expectIdent());
+  }
+  return newNodeNum(expectNumber());
+}
