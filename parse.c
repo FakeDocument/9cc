@@ -125,12 +125,14 @@ Token *tokenizer(char *s)
       cur->num = strtol(s, &s, 10);
       continue;
     }
-
-    if (strncmp(s, "return", 6) == 0 && !isAlNumBar(s[6]))
     {
-      cur = newToken(TK_RETURN, cur, s, 6);
-      s += 6;
-      continue;
+      const int len = 6;
+      if (strncmp(s, "return", len) == 0 && !isAlNumBar(s[len]))
+      {
+        cur = newToken(TK_RETURN, cur, s, len);
+        s += len;
+        continue;
+      }
     }
     {
       const int len = 2;
