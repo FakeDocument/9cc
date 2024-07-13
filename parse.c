@@ -213,7 +213,7 @@ LoVar *findLoVar(Token *tkn)
   return NULL;
 }
 
-Node *newNode(NodeKind kind, Node *left, Node *right)
+Node *newLRNode(NodeKind kind, Node *left, Node *right)
 {
   Node *node = (Node *)calloc(1, sizeof(Node));
   node->kind = kind;
@@ -279,7 +279,7 @@ Node *stmt()
   Node *node;
   if (consumeByTokenKind(TK_RETURN))
   {
-    node = newNode(ND_RETURN, expr(), NULL);
+    node = newLRNode(ND_RETURN, expr(), NULL);
   }
   else
   {
@@ -301,7 +301,7 @@ Node *assign()
   Node *node = equality();
   if (consume("="))
   {
-    node = newNode(ND_ASSIGN, node, assign());
+    node = newLRNode(ND_ASSIGN, node, assign());
   }
   return node;
 }
@@ -316,11 +316,11 @@ Node *equality()
   {
     if (consume("=="))
     {
-      node = newNode(ND_EQL, node, next());
+      node = newLRNode(ND_EQL, node, next());
     }
     else if (consume("!="))
     {
-      node = newNode(ND_NEQL, node, next());
+      node = newLRNode(ND_NEQL, node, next());
     }
     else
     {
@@ -339,19 +339,19 @@ Node *relational()
     if (consume(">="))
     {
       // アセンブリには以下の判定しかないため左右を入れ替える
-      node = newNode(ND_LESS_THAN, next(), node);
+      node = newLRNode(ND_LESS_THAN, next(), node);
     }
     else if (consume("<="))
     {
-      node = newNode(ND_LESS_THAN, node, next());
+      node = newLRNode(ND_LESS_THAN, node, next());
     }
     else if (consume(">"))
     {
-      node = newNode(ND_LESS, next(), node);
+      node = newLRNode(ND_LESS, next(), node);
     }
     else if (consume("<"))
     {
-      node = newNode(ND_LESS, node, next());
+      node = newLRNode(ND_LESS, node, next());
     }
     else
     {
@@ -369,11 +369,11 @@ Node *add()
   {
     if (consume("+"))
     {
-      node = newNode(ND_ADD, node, next());
+      node = newLRNode(ND_ADD, node, next());
     }
     else if (consume("-"))
     {
-      node = newNode(ND_SUB, node, next());
+      node = newLRNode(ND_SUB, node, next());
     }
     else
     {
@@ -391,11 +391,11 @@ Node *mul()
   {
     if (consume("*"))
     {
-      node = newNode(ND_MUL, node, next());
+      node = newLRNode(ND_MUL, node, next());
     }
     else if (consume("/"))
     {
-      node = newNode(ND_DIV, node, next());
+      node = newLRNode(ND_DIV, node, next());
     }
     else
     {
@@ -414,7 +414,7 @@ Node *unary()
   }
   else if (consume("-"))
   {
-    return newNode(ND_SUB, newNodeNum(0), primary());
+    return newLRNode(ND_SUB, newNodeNum(0), primary());
   }
   return primary();
   ;
