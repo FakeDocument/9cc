@@ -66,8 +66,10 @@ struct NodeStruct
 {
   NodeKind kind;
   struct NodeStruct *left, *right;
-  int val;    // kindがND_NUMの場合のみ使う
-  int offset; // kindがND_LVARの場合のみ使う
+  struct NodeStruct *condition;  // 条件式
+  struct NodeStruct *then, *els; // if関係
+  int val;                       // kindがND_NUMの場合のみ使う
+  int offset;                    // kindがND_LVARの場合のみ使う
 };
 
 typedef struct NodeStruct Node;
