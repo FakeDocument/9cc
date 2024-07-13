@@ -70,9 +70,13 @@ struct NodeStruct
   struct NodeStruct *then, *els; // if関係
   int val;                       // kindがND_NUMの場合のみ使う
   int offset;                    // kindがND_LVARの場合のみ使う
+  int labelID;                   // if文などで使う通し番号
 };
 
 typedef struct NodeStruct Node;
+
+int currentLabelID = 0;
+
 /*ローカル変数*/
 struct LoVarStruct
 {
