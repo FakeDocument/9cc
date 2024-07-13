@@ -213,7 +213,14 @@ LoVar *findLoVar(Token *tkn)
   return NULL;
 }
 
-Node *newLRNode(NodeKind kind, Node *left, Node *right)
+Node *newNode(NodeKind kind)
+{
+  Node *node = (Node *)calloc(1, sizeof(Node));
+  node->kind = kind;
+  return node;
+}
+
+Node *newNode(NodeKind kind, Node *left, Node *right)
 {
   Node *node = (Node *)calloc(1, sizeof(Node));
   node->kind = kind;
@@ -277,6 +284,17 @@ void program()
 Node *stmt()
 {
   Node *node;
+  if (consumeByTokenKind(TK_IF))
+  {
+    expect("(");
+    Node *condition = expr();
+    expect(")");
+    Node *then = stmt();
+    node = newNode(ND_IF);
+    node->condition = condition;
+    node->then = then;
+    return node;
+  }
   if (consumeByTokenKind(TK_RETURN))
   {
     node = newLRNode(ND_RETURN, expr(), NULL);
