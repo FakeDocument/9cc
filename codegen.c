@@ -2,6 +2,15 @@
 
 void gen(Node *node)
 {
+    if (node->kind == ND_IF)
+    {
+        gen(node->condition);
+        printf("  pop rax\n");
+        printf("  cmp rax, 0\n");
+        printf("  je  .Lend%d\n", node->labelID);
+        gen(node->then);
+        printf(".Lend%d\n", node->labelID);
+    }
     if (node->kind == ND_RETURN)
     {
         gen(node->left);
