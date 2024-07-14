@@ -75,7 +75,7 @@ struct NodeStruct
 
 typedef struct NodeStruct Node;
 
-int currentLabelID = 0;
+extern int currentLabelID;
 
 /*ローカル変数*/
 struct LoVarStruct

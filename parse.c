@@ -1,5 +1,7 @@
 #include "9cc.h"
 
+int currentLabelID = 0;
+
 /*
 次のトークンが期待している記号の時はトークンを進めてTrue
 それ以外ならFalse
