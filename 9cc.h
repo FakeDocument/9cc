@@ -136,6 +136,7 @@ Token *newToken(TokenKind kind, Token *cur, char *str, int len);
 
 Token *tokenizer(char *s);
 
+Node *newNode(NodeKind kind);
 Node *newLRNode(NodeKind kind, Node *left, Node *right);
 
 Node *newNodeNum(int val);

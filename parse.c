@@ -220,7 +220,7 @@ Node *newNode(NodeKind kind)
   return node;
 }
 
-Node *newNode(NodeKind kind, Node *left, Node *right)
+Node *newLRNode(NodeKind kind, Node *left, Node *right)
 {
   Node *node = (Node *)calloc(1, sizeof(Node));
   node->kind = kind;
