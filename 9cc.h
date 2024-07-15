@@ -27,7 +27,10 @@ typedef enum
   TK_NUM,      // 数値
   TK_IDENT,    // 識別子
   TK_EOF,
-  TK_RETURN
+  TK_RETURN,
+  TK_IF,
+  TK_WHILE,
+  TK_FOR,
 } TokenKind; // トークンの型
 
 struct TokenStruct
@@ -44,7 +47,6 @@ typedef enum
 {
   ND_NUM,
   ND_LVAR,      // ローカル変数
-  ND_RETURN,    // return
   ND_ADD,       // +
   ND_SUB,       // -
   ND_MUL,       // *
@@ -54,17 +56,27 @@ typedef enum
   ND_NEQL,      // !=
   ND_LESS,      // <
   ND_LESS_THAN, // <=
+  ND_RETURN,    // return
+  ND_IF,        // if
+  ND_WHILE,     // while
+  ND_FOR,       // for
 } NodeKind;
 
 struct NodeStruct
 {
   NodeKind kind;
   struct NodeStruct *left, *right;
-  int val;    // kindがND_NUMの場合のみ使う
-  int offset; // kindがND_LVARの場合のみ使う
+  struct NodeStruct *condition;  // 条件式
+  struct NodeStruct *then, *els; // if関係
+  int val;                       // kindがND_NUMの場合のみ使う
+  int offset;                    // kindがND_LVARの場合のみ使う
+  int labelID;                   // if文などで使う通し番号
 };
 
 typedef struct NodeStruct Node;
+
+extern int currentLabelID;
+
 /*ローカル変数*/
 struct LoVarStruct
 {
@@ -124,7 +136,8 @@ Token *newToken(TokenKind kind, Token *cur, char *str, int len);
 
 Token *tokenizer(char *s);
 
-Node *newNode(NodeKind kind, Node *left, Node *right);
+Node *newNode(NodeKind kind);
+Node *newLRNode(NodeKind kind, Node *left, Node *right);
 
 Node *newNodeNum(int val);
 Node *newNodeIdent(Token *tkn);
