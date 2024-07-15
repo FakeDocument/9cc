@@ -4,12 +4,19 @@ void gen(Node *node)
 {
     if (node->kind == ND_IF)
     {
+        DEBUG_PRINT("# start if state\n");
+        DEBUG_PRINT("\n# start condition expr\n");
         gen(node->condition);
+        DEBUG_PRINT("\n#  end condition expr\n");
+
         printf("  pop rax\n");
         printf("  cmp rax, 0\n");
         printf("  je  .Lend%d\n", node->labelID);
+        DEBUG_PRINT("\n# start then state\n");
         gen(node->then);
-        printf(".Lend%d\n", node->labelID);
+        DEBUG_PRINT("\n# end then state\n");
+        printf(".Lend%d:\n", node->labelID);
+        return;
     }
     if (node->kind == ND_RETURN)
     {
