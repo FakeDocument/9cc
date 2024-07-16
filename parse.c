@@ -145,6 +145,15 @@ Token *tokenizer(char *s)
         continue;
       }
     }
+    {
+      const int len = 4;
+      if (strncmp(s, "else", len) == 0 && !isAlNumBar(s[len]))
+      {
+        cur = newToken(TK_ELSE, cur, s, len);
+        s += len;
+        continue;
+      }
+    }
     if (
         strncmp(s, "==", 2) == 0 ||
         strncmp(s, "!=", 2) == 0 ||
@@ -292,10 +301,17 @@ Node *stmt()
     Node *condition = expr();
     expect(")");
     Node *then = stmt();
+    Node *els;
+    if (consumeByTokenKind(TK_ELSE))
+    {
+      els = stmt();
+    }
     node = newNode(ND_IF);
     node->condition = condition;
     node->then = then;
+    node->els = els;
     node->labelID = currentLabelID++;
+
     return node;
   }
   if (consumeByTokenKind(TK_RETURN))
