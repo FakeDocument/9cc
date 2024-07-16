@@ -11,12 +11,29 @@ void gen(Node *node)
 
         printf("  pop rax\n");
         printf("  cmp rax, 0\n");
-        printf("  je  .Lend%d\n", node->labelID);
-        DEBUG_PRINT("\n# start then state\n");
-        gen(node->then);
-        DEBUG_PRINT("\n# end then state\n");
-        printf(".Lend%d:\n", node->labelID);
-        return;
+        if (node->els == NULL)
+        {
+            printf("  je  .Lend%d\n", node->labelID);
+            DEBUG_PRINT("\n# start then state\n");
+            gen(node->then);
+            DEBUG_PRINT("\n# end then state\n");
+            printf(".Lend%d:\n", node->labelID);
+            return;
+        }
+        else
+        {
+            printf("  je  .Lelse%d\n", node->labelID);
+            DEBUG_PRINT("\n# start then state\n");
+            gen(node->then);
+            DEBUG_PRINT("\n# end then state\n");
+            printf("  jmp  .Lend%d\n", node->labelID);
+            printf(".Lelse%d:\n", node->labelID);
+            DEBUG_PRINT("\n# start else state\n");
+            gen(node->els);
+            DEBUG_PRINT("\n# end else state\n");
+            printf(".Lend%d:\n", node->labelID);
+            return;
+        }
     }
     if (node->kind == ND_RETURN)
     {

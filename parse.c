@@ -301,7 +301,7 @@ Node *stmt()
     Node *condition = expr();
     expect(")");
     Node *then = stmt();
-    Node *els;
+    Node *els = NULL;
     if (consumeByTokenKind(TK_ELSE))
     {
       els = stmt();
