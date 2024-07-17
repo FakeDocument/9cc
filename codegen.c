@@ -35,6 +35,28 @@ void gen(Node *node)
             return;
         }
     }
+    if (node->kind == ND_WHILE)
+    {
+        DEBUG_PRINT("\n# start while state\n");
+        printf(".Lbegin%d:\n", node->labelID);
+
+        DEBUG_PRINT("\n# start condition state\n");
+        gen(node->condition);
+        DEBUG_PRINT("\n# end condition state\n");
+
+        printf("  pop rax\n");
+        printf("  cmp rax, 0\n");
+        printf("  je  .Lend%d\n", node->labelID);
+
+        DEBUG_PRINT("\n# start then state\n");
+        gen(node->then);
+        DEBUG_PRINT("\n# end then state\n");
+
+        printf("  jmp  .Lbegin%d\n", node->labelID);
+        printf(".Lend%d:\n", node->labelID);
+        DEBUG_PRINT("\n# end while state\n");
+        return;
+    }
     if (node->kind == ND_RETURN)
     {
         gen(node->left);
