@@ -332,6 +332,9 @@ Node *stmt()
     node = newNode(ND_WHILE);
     node->condition = condition;
     node->then = then;
+    node->labelID = currentLabelID++;
+
+    return node;
   }
   if (consumeByTokenKind(TK_RETURN))
   {
