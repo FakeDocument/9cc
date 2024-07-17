@@ -154,6 +154,15 @@ Token *tokenizer(char *s)
         continue;
       }
     }
+    {
+      const int len = 5;
+      if (strncmp(s, "while", len) == 0 && !isAlNumBar(s[len]))
+      {
+        cur = newToken(TK_WHILE, cur, s, len);
+        s += len;
+        continue;
+      }
+    }
     if (
         strncmp(s, "==", 2) == 0 ||
         strncmp(s, "!=", 2) == 0 ||
@@ -310,6 +319,19 @@ Node *stmt()
     node->condition = condition;
     node->then = then;
     node->els = els;
+    node->labelID = currentLabelID++;
+
+    return node;
+  }
+  if (consumeByTokenKind(TK_WHILE))
+  {
+    expect("(");
+    Node *condition = expr();
+    expect(")");
+    Node *then = stmt();
+    node = newNode(ND_WHILE);
+    node->condition = condition;
+    node->then = then;
     node->labelID = currentLabelID++;
 
     return node;
