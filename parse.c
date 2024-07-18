@@ -30,6 +30,21 @@ bool consumeByTokenKind(TokenKind tk)
 }
 
 /*
+次のトークンが期待している文字の時はTrue
+それ以外ならFalse
+*/
+bool consume(char *op)
+{
+  if (
+      strlen(op) != token->len ||
+      memcmp(token->str, op, token->len))
+  {
+    return false;
+  }
+  return true;
+}
+
+/*
 次のトークンが変数の時はトークンを進めずTrue
 それ以外ならFalse
 */
