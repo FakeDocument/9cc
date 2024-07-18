@@ -178,6 +178,15 @@ Token *tokenizer(char *s)
         continue;
       }
     }
+    {
+      const int len = 3;
+      if (strncmp(s, "for", len) == 0 && !isAlNumBar(s[len]))
+      {
+        cur = newToken(TK_FOR, cur, s, len);
+        s += len;
+        continue;
+      }
+    }
     if (
         strncmp(s, "==", 2) == 0 ||
         strncmp(s, "!=", 2) == 0 ||
