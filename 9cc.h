@@ -126,7 +126,7 @@ bool consumeByTokenKind(TokenKind tk);
 bool peekIdent();
 
 /*
-次のトークンが期待している文字の時はTrue
+次のトークンが期待している文字の時はトークンを進めずTrue
 それ以外ならFalse
 */
 bool peek(char *op);
