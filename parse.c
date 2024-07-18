@@ -360,6 +360,25 @@ Node *stmt()
 
     return node;
   }
+  if (consumeByTokenKind(TK_FOR))
+  {
+    expect("(");
+    Node *init = expr();
+    expect(";");
+    Node *condition = expr();
+    expect(";");
+    Node *update = expr();
+    expect(")");
+    Node *then = stmt();
+    node = newNode(ND_FOR);
+    node->init = init;
+    node->condition = condition;
+    node->update = update;
+    node->then = then;
+    node->labelID = currentLabelID++;
+
+    return node;
+  }
   if (consumeByTokenKind(TK_RETURN))
   {
     node = newLRNode(ND_RETURN, expr(), NULL);
