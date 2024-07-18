@@ -57,6 +57,45 @@ void gen(Node *node)
         DEBUG_PRINT("\n# end while state\n");
         return;
     }
+    if (node->kind == ND_FOR)
+    {
+        DEBUG_PRINT("\n# start for state\n");
+
+        if (node->init)
+        {
+            DEBUG_PRINT("\n# start init expr\n");
+            gen(node->init);
+            DEBUG_PRINT("\n# start init expr\n");
+        }
+
+        printf(".Lbegin%d:\n", node->labelID);
+
+        if (node->condition)
+        {
+            DEBUG_PRINT("\n# start condition expr\n");
+            gen(node->condition);
+            DEBUG_PRINT("\n# end condition expr\n");
+        }
+
+        printf("  pop rax\n");
+        printf("  cmp rax, 0\n");
+        printf("  je  .Lend%d\n", node->labelID);
+
+        DEBUG_PRINT("\n# start then state\n");
+        gen(node->then);
+        DEBUG_PRINT("\n# end then state\n");
+
+        if (node->update)
+        {
+            DEBUG_PRINT("\n# start update expr\n");
+            gen(node->update);
+            DEBUG_PRINT("\n# end update expr\n");
+        }
+        printf("  jmp  .Lbegin%d\n", node->labelID);
+        printf(".Lend%d:\n", node->labelID);
+        DEBUG_PRINT("\n# end for state\n");
+        return;
+    }
     if (node->kind == ND_RETURN)
     {
         gen(node->left);
