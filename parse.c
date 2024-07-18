@@ -33,7 +33,7 @@ bool consumeByTokenKind(TokenKind tk)
 次のトークンが期待している文字の時はTrue
 それ以外ならFalse
 */
-bool consume(char *op)
+bool peek(char *op)
 {
   if (
       strlen(op) != token->len ||
