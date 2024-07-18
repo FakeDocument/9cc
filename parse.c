@@ -362,12 +362,24 @@ Node *stmt()
   }
   if (consumeByTokenKind(TK_FOR))
   {
+    Node *init = NULL;
+    Node *condition = NULL;
+    Node *update = NULL;
     expect("(");
-    Node *init = expr();
+    if (!peek(";"))
+    {
+      init = expr();
+    }
     expect(";");
-    Node *condition = expr();
+    if (!peek(";"))
+    {
+      condition = expr();
+    }
     expect(";");
-    Node *update = expr();
+    if (!peek(")"))
+    {
+      update = expr();
+    }
     expect(")");
     Node *then = stmt();
     node = newNode(ND_FOR);
