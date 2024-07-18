@@ -125,6 +125,12 @@ bool consumeByTokenKind(TokenKind tk);
 */
 bool peekIdent();
 
+/*
+次のトークンが期待している文字の時はTrue
+それ以外ならFalse
+*/
+bool peek(char *op);
+
 void expect(char *op);
 
 int expectNumber();
