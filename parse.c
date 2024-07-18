@@ -33,7 +33,7 @@ bool consumeByTokenKind(TokenKind tk)
 次のトークンが期待している文字の時はTrue
 それ以外ならFalse
 */
-bool consume(char *op)
+bool peek(char *op)
 {
   if (
       strlen(op) != token->len ||
@@ -174,6 +174,15 @@ Token *tokenizer(char *s)
       if (strncmp(s, "while", len) == 0 && !isAlNumBar(s[len]))
       {
         cur = newToken(TK_WHILE, cur, s, len);
+        s += len;
+        continue;
+      }
+    }
+    {
+      const int len = 3;
+      if (strncmp(s, "for", len) == 0 && !isAlNumBar(s[len]))
+      {
+        cur = newToken(TK_FOR, cur, s, len);
         s += len;
         continue;
       }
@@ -346,6 +355,37 @@ Node *stmt()
     Node *then = stmt();
     node = newNode(ND_WHILE);
     node->condition = condition;
+    node->then = then;
+    node->labelID = currentLabelID++;
+
+    return node;
+  }
+  if (consumeByTokenKind(TK_FOR))
+  {
+    Node *init = NULL;
+    Node *condition = NULL;
+    Node *update = NULL;
+    expect("(");
+    if (!peek(";"))
+    {
+      init = expr();
+    }
+    expect(";");
+    if (!peek(";"))
+    {
+      condition = expr();
+    }
+    expect(";");
+    if (!peek(")"))
+    {
+      update = expr();
+    }
+    expect(")");
+    Node *then = stmt();
+    node = newNode(ND_FOR);
+    node->init = init;
+    node->condition = condition;
+    node->update = update;
     node->then = then;
     node->labelID = currentLabelID++;
 

@@ -68,11 +68,12 @@ struct NodeStruct
 {
   NodeKind kind;
   struct NodeStruct *left, *right;
-  struct NodeStruct *condition;  // 条件式
-  struct NodeStruct *then, *els; // if関係
-  int val;                       // kindがND_NUMの場合のみ使う
-  int offset;                    // kindがND_LVARの場合のみ使う
-  int labelID;                   // if文などで使う通し番号
+  struct NodeStruct *condition;     // 条件式
+  struct NodeStruct *then, *els;    // if関係
+  struct NodeStruct *init, *update; // for関係
+  int val;                          // kindがND_NUMの場合のみ使う
+  int offset;                       // kindがND_LVARの場合のみ使う
+  int labelID;                      // if文などで使う通し番号
 };
 
 typedef struct NodeStruct Node;
