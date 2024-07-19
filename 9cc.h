@@ -95,7 +95,10 @@ typedef struct LoVarStruct LoVar;
 extern LoVar *loVarList;
 
 /*プログラムリストの先頭ポインタ*/
-extern Node *code;
+extern Node *codeFront;
+
+/*プログラムリストの末尾ポインタ*/
+extern Node *codeback;
 
 // ユーザーの入力した文字列
 // extern char* userInput;
