@@ -98,7 +98,7 @@ extern LoVar *loVarList;
 extern Node *codeFront;
 
 /*プログラムリストの末尾ポインタ*/
-extern Node *codeback;
+extern Node *codeEnd;
 
 // ユーザーの入力した文字列
 // extern char* userInput;
