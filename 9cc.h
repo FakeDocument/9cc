@@ -67,7 +67,8 @@ typedef enum
 struct NodeStruct
 {
   NodeKind kind;
-  struct NodeStruct *left, *right;
+  struct NodeStruct *nextCode;      // プログラムを数珠繋ぎにするため
+  struct NodeStruct *left, *right;  // 左辺　右辺
   struct NodeStruct *condition;     // 条件式
   struct NodeStruct *then, *els;    // if関係
   struct NodeStruct *init, *update; // for関係
