@@ -94,8 +94,8 @@ typedef struct LoVarStruct LoVar;
 /*ローカル変数の先頭ポインタ*/
 extern LoVar *loVarList;
 
-// 100文まで格納する
-extern Node *code[100];
+/*プログラムリストの先頭ポインタ*/
+extern Node *code;
 
 // ユーザーの入力した文字列
 // extern char* userInput;
