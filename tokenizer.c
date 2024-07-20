@@ -206,6 +206,8 @@ Token *tokenizer(char *s)
             *s == '<' ||
             *s == '>' ||
             *s == ';' ||
+            *s == '{' ||
+            *s == '}' ||
             *s == '=')
         {
             cur = newToken(TK_RESERVED, cur, s, 1);
