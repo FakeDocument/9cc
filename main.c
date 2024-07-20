@@ -64,13 +64,15 @@ int main(int argc, char **argv)
   printf("  sub rsp, %d\n", loVarList->offset);
   DEBUG_PRINT("#プロローグここまで\n");
 
-  for (int i = 0; code[i]; i++)
+  while (codeHead)
   {
-    gen(code[i]);
+    gen(codeHead);
 
     // 式の評価結果としてスタックに一つの値が残っている
     // はずなので、スタックが溢れないようにポップしておく
     printf("  pop rax\n");
+
+    codeHead = codeHead->nextCode;
   }
 
   // 最後の式の結果がraxに残ってるらしい

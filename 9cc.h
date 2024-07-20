@@ -95,7 +95,7 @@ typedef struct LoVarStruct LoVar;
 extern LoVar *loVarList;
 
 /*プログラムリストの先頭ポインタ*/
-extern Node *codeTop;
+extern Node *codeHead;
 
 /*プログラムリストの末尾ポインタ*/
 extern Node *codeEnd;

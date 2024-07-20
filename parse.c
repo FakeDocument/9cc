@@ -2,6 +2,8 @@
 
 int currentLabelID = 0;
 
+Node *codeHead = NULL;
+Node *codeEnd = NULL;
 /*
 次のトークンが期待している記号の時はトークンを進めてTrue
 それ以外ならFalse
@@ -237,7 +239,7 @@ Token *tokenizer(char *s)
   return head.next;
 }
 
-Node *code[100];
+Node *codeHead;
 
 LoVar *findLoVar(Token *tkn)
 {
@@ -309,13 +311,18 @@ Node *newNodeIdent(Token *tkn)
 
 void program()
 {
+
   int i = 0;
+  codeHead = stmt();
+  codeEnd = codeHead;
   // EOFでなく、iが100未満でループ
-  while (!atEOF() && i < 100)
+  while (!atEOF())
   {
-    code[i++] = stmt();
+    Node *node = stmt();
+    codeEnd->nextCode = node;
+    codeEnd = node;
   }
-  code[i] = NULL;
+  codeEnd->nextCode = NULL;
 }
 
 /*
