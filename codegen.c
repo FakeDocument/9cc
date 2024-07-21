@@ -226,3 +226,8 @@ void genFor(Node *node)
     DEBUG_PRINT("\n# end for state\n");
     return;
 }
+
+void genFuncCall(Node *node)
+{
+    DEBUG_PRINT("\n# start gen call")
+}

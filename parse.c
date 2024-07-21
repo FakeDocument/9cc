@@ -334,7 +334,7 @@ Node *primary()
     }
     // 関数の場合
     expect(")");
-    node->kind = ND_FUNCTION;
+    node->kind = ND_CALL;
     return node;
   }
   return newNodeNum(expectNumber());

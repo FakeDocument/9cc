@@ -48,7 +48,7 @@ typedef enum
 {
   ND_NUM,
   ND_LVAR,      // ローカル変数
-  ND_FUNCTION,  // 関数
+  ND_CALL,      // 関数呼び出し
   ND_BLOCK,     // ブロック文
   ND_ADD,       // +
   ND_SUB,       // -
@@ -170,6 +170,7 @@ Node *unary();      //("+" |"-")? primary
 Node *primary();    // num|ident|"("expr")"
                     // 優先度高
 
+void genFuncCall(Node *node);
 void genExpr(Node *node);
 void genIf(Node *node);
 void genWhile(Node *node);
