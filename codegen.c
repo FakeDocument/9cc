@@ -2,6 +2,11 @@
 
 void gen(Node *node)
 {
+    if (node->kind == ND_CALL)
+    {
+        genFuncCall(node);
+        return;
+    }
     if (node->kind == ND_BLOCK)
     {
         DEBUG_PRINT("\n# start block state\n");
@@ -229,5 +234,7 @@ void genFor(Node *node)
 
 void genFuncCall(Node *node)
 {
-    DEBUG_PRINT("\n# start gen call")
+    DEBUG_PRINT("\n# start gen function call\n");
+    printf("  call %s\n", node->str);
+    DEBUG_PRINT("# end gen function call\n\n");
 }

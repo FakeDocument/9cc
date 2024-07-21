@@ -66,6 +66,8 @@ Node *newNodeIdent(Token *tkn)
     loVarList = lovar;
   }
   node->offset = lovar->offset;
+  node->str = lovar->str;
+  node->len = lovar->len;
   return node;
 }
 
@@ -335,6 +337,8 @@ Node *primary()
     // 関数の場合
     expect(")");
     node->kind = ND_CALL;
+    DEBUG_PRINT("# node len = %d\n", node->len);
+    node->str[node->len] = '\0';
     return node;
   }
   return newNodeNum(expectNumber());

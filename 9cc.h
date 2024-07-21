@@ -76,6 +76,8 @@ struct NodeStruct
   struct NodeStruct *init, *update; // for関係
   int val;                          // kindがND_NUMの場合のみ使う
   int offset;                       // kindがND_LVARの場合のみ使う
+  char *str;                        // 関数呼び出しなどに使う文字列
+  int len;                          // 関数の識別子を取り出すための文字列長
   int labelID;                      // if文などで使う通し番号
 };
 
