@@ -125,16 +125,16 @@ bool consume(char *op);
 bool consumeByTokenKind(TokenKind tk);
 
 /*
-次のトークンが変数の時はトークンを進めずTrue
-それ以外ならFalse
-*/
-bool peekIdent();
-
-/*
 次のトークンが期待している文字の時はトークンを進めずTrue
 それ以外ならFalse
 */
 bool peek(char *op);
+
+/**
+ * 次のトークンが期待しているトークン種の時はTrue
+ * それ以外ならFalse
+ */
+bool peekByTokenKind(TokenKind tk);
 
 void expect(char *op);
 

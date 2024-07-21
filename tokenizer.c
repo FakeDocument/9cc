@@ -27,10 +27,6 @@ bool consumeByTokenKind(TokenKind tk)
     return true;
 }
 
-/*
-次のトークンが期待している文字の時はTrue
-それ以外ならFalse
-*/
 bool peek(char *op)
 {
     if (
@@ -42,17 +38,9 @@ bool peek(char *op)
     return true;
 }
 
-/*
-次のトークンが変数の時はトークンを進めずTrue
-それ以外ならFalse
-*/
-bool peekIdent()
+bool peekByTokenKind(TokenKind tk)
 {
-    if (token->kind != TK_IDENT)
-    {
-        return false;
-    }
-    return true;
+    return token->kind == tk;
 }
 
 /*
