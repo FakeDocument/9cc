@@ -17,96 +17,17 @@ void gen(Node *node)
     }
     if (node->kind == ND_IF)
     {
-        DEBUG_PRINT("# start if state\n");
-        DEBUG_PRINT("\n# start condition expr\n");
-        gen(node->condition);
-        DEBUG_PRINT("\n#  end condition expr\n");
-
-        printf("  pop rax\n");
-        printf("  cmp rax, 0\n");
-        if (node->els == NULL)
-        {
-            printf("  je  .Lend%d\n", node->labelID);
-            DEBUG_PRINT("\n# start then state\n");
-            gen(node->then);
-            DEBUG_PRINT("\n# end then state\n");
-            printf(".Lend%d:\n", node->labelID);
-            return;
-        }
-        else
-        {
-            printf("  je  .Lelse%d\n", node->labelID);
-            DEBUG_PRINT("\n# start then state\n");
-            gen(node->then);
-            DEBUG_PRINT("\n# end then state\n");
-            printf("  jmp  .Lend%d\n", node->labelID);
-            printf(".Lelse%d:\n", node->labelID);
-            DEBUG_PRINT("\n# start else state\n");
-            gen(node->els);
-            DEBUG_PRINT("\n# end else state\n");
-            printf(".Lend%d:\n", node->labelID);
-            return;
-        }
+        genIf(node);
+        return;
     }
     if (node->kind == ND_WHILE)
     {
-        DEBUG_PRINT("\n# start while state\n");
-        printf(".Lbegin%d:\n", node->labelID);
-
-        DEBUG_PRINT("\n# start condition state\n");
-        gen(node->condition);
-        DEBUG_PRINT("\n# end condition state\n");
-
-        printf("  pop rax\n");
-        printf("  cmp rax, 0\n");
-        printf("  je  .Lend%d\n", node->labelID);
-
-        DEBUG_PRINT("\n# start then state\n");
-        gen(node->then);
-        DEBUG_PRINT("\n# end then state\n");
-
-        printf("  jmp  .Lbegin%d\n", node->labelID);
-        printf(".Lend%d:\n", node->labelID);
-        DEBUG_PRINT("\n# end while state\n");
+        genWhile(node);
         return;
     }
     if (node->kind == ND_FOR)
     {
-        DEBUG_PRINT("\n# start for state\n");
-
-        if (node->init)
-        {
-            DEBUG_PRINT("\n# start init expr\n");
-            gen(node->init);
-            DEBUG_PRINT("\n# start init expr\n");
-        }
-
-        printf(".Lbegin%d:\n", node->labelID);
-
-        if (node->condition)
-        {
-            DEBUG_PRINT("\n# start condition expr\n");
-            gen(node->condition);
-            DEBUG_PRINT("\n# end condition expr\n");
-        }
-
-        printf("  pop rax\n");
-        printf("  cmp rax, 0\n");
-        printf("  je  .Lend%d\n", node->labelID);
-
-        DEBUG_PRINT("\n# start then state\n");
-        gen(node->then);
-        DEBUG_PRINT("\n# end then state\n");
-
-        if (node->update)
-        {
-            DEBUG_PRINT("\n# start update expr\n");
-            gen(node->update);
-            DEBUG_PRINT("\n# end update expr\n");
-        }
-        printf("  jmp  .Lbegin%d\n", node->labelID);
-        printf(".Lend%d:\n", node->labelID);
-        DEBUG_PRINT("\n# end for state\n");
+        genFor(node);
         return;
     }
     if (node->kind == ND_RETURN)
@@ -126,11 +47,11 @@ void gen(Node *node)
         return;
     case ND_LVAR:
         genLval(node);
-        DEBUG_PRINT("#変数ロード開始vvvv\n");
+        DEBUG_PRINT("# start local variable\n");
         printf("  pop rax\n");
         printf("  mov rax, [rax]\n");
         printf("  push rax\n");
-        DEBUG_PRINT("#変数ロード完了^^^^\n");
+        DEBUG_PRINT("# end local variable\n");
         return;
     case ND_ASSIGN:
         DEBUG_PRINT("#代入開始\n");
@@ -197,9 +118,106 @@ void genLval(Node *node)
 {
     if (node->kind != ND_LVAR)
         error("代入の左辺値が変数ではありません");
-    DEBUG_PRINT("#変数\n");
+    DEBUG_PRINT("# start gen local variable\n");
     printf("  mov rax, rbp\n");
     printf("  sub rax, %d\n", node->offset);
     printf("  push rax\n");
-    DEBUG_PRINT("#変数ここまで\n");
+    DEBUG_PRINT("# end gen local variable\n");
+}
+
+void genIf(Node *node)
+{
+    DEBUG_PRINT("# start if state\n");
+    DEBUG_PRINT("\n# start condition expr\n");
+    gen(node->condition);
+    DEBUG_PRINT("\n#  end condition expr\n");
+
+    printf("  pop rax\n");
+    printf("  cmp rax, 0\n");
+    if (node->els == NULL)
+    {
+        printf("  je  .Lend%d\n", node->labelID);
+        DEBUG_PRINT("\n# start then state\n");
+        gen(node->then);
+        DEBUG_PRINT("\n# end then state\n");
+        printf(".Lend%d:\n", node->labelID);
+        return;
+    }
+    else
+    {
+        printf("  je  .Lelse%d\n", node->labelID);
+        DEBUG_PRINT("\n# start then state\n");
+        gen(node->then);
+        DEBUG_PRINT("\n# end then state\n");
+        printf("  jmp  .Lend%d\n", node->labelID);
+        printf(".Lelse%d:\n", node->labelID);
+        DEBUG_PRINT("\n# start else state\n");
+        gen(node->els);
+        DEBUG_PRINT("\n# end else state\n");
+        printf(".Lend%d:\n", node->labelID);
+        return;
+    }
+}
+
+void genWhile(Node *node)
+{
+    DEBUG_PRINT("\n# start while state\n");
+    printf(".Lbegin%d:\n", node->labelID);
+
+    DEBUG_PRINT("\n# start condition state\n");
+    gen(node->condition);
+    DEBUG_PRINT("\n# end condition state\n");
+
+    printf("  pop rax\n");
+    printf("  cmp rax, 0\n");
+    printf("  je  .Lend%d\n", node->labelID);
+
+    DEBUG_PRINT("\n# start then state\n");
+    gen(node->then);
+    DEBUG_PRINT("\n# end then state\n");
+
+    printf("  jmp  .Lbegin%d\n", node->labelID);
+    printf(".Lend%d:\n", node->labelID);
+    DEBUG_PRINT("\n# end while state\n");
+    return;
+}
+
+void genFor(Node *node)
+{
+    DEBUG_PRINT("\n# start for state\n");
+
+    if (node->init)
+    {
+        DEBUG_PRINT("\n# start init expr\n");
+        gen(node->init);
+        DEBUG_PRINT("\n# start init expr\n");
+    }
+
+    printf(".Lbegin%d:\n", node->labelID);
+
+    if (node->condition)
+    {
+        DEBUG_PRINT("\n# start condition expr\n");
+        gen(node->condition);
+        DEBUG_PRINT("\n# end condition expr\n");
+    }
+
+    printf("  pop rax\n");
+    printf("  cmp rax, 0\n");
+    printf("  je  .Lend%d\n", node->labelID);
+
+    DEBUG_PRINT("\n# start then state\n");
+    gen(node->then);
+    DEBUG_PRINT("\n# end then state\n");
+
+    if (node->update)
+    {
+        DEBUG_PRINT("\n# start update expr\n");
+        gen(node->update);
+        DEBUG_PRINT("\n# end update expr\n");
+    }
+    printf("  jmp  .Lbegin%d\n", node->labelID);
+    printf(".Lend%d:\n", node->labelID);
+    DEBUG_PRINT("\n# end for state\n");
+    return;
 }

@@ -169,6 +169,9 @@ Node *unary();      //("+" |"-")? primary
 Node *primary();    // num|ident|"("expr")"
                     // 優先度高
 
+void genIf(Node *node);
+void genWhile(Node *node);
+void genFor(Node *node);
 void gen(Node *node);
 /**
  * gen_lvalは、与えられたノードが変数を指しているときに、その変数のアドレスを計算して、それをスタックにプッシュする
