@@ -2,6 +2,19 @@
 
 void gen(Node *node)
 {
+    if (node->kind == ND_BLOCK)
+    {
+        DEBUG_PRINT("# start block state\n");
+        node = node->nextCode;
+        while (node)
+        {
+            gen(node);
+            printf("  pop rax\n");
+            node = node->nextCode;
+        }
+        DEBUG_PRINT("# end block state\n");
+        return;
+    }
     if (node->kind == ND_IF)
     {
         DEBUG_PRINT("# start if state\n");

@@ -99,6 +99,20 @@ void program()
 Node *stmt()
 {
   Node *node;
+  if (consume("{"))
+  {
+    Node *head = newNode(ND_BLOCK);
+    Node *end = head;
+    /* @todo }がない場合の処理も考える*/
+    while (!consume("}"))
+    {
+      Node *crnt = stmt();
+      end->nextCode = crnt;
+      end = crnt;
+    }
+    end->nextCode = NULL;
+    return head;
+  }
   if (consumeByTokenKind(TK_IF))
   {
     expect("(");

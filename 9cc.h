@@ -48,6 +48,7 @@ typedef enum
 {
   ND_NUM,
   ND_LVAR,      // ローカル変数
+  ND_BLOCK,     // ブロック文
   ND_ADD,       // +
   ND_SUB,       // -
   ND_MUL,       // *
