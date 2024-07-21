@@ -4,7 +4,7 @@ void gen(Node *node)
 {
     if (node->kind == ND_BLOCK)
     {
-        DEBUG_PRINT("# start block state\n");
+        DEBUG_PRINT("\n# start block state\n");
         node = node->nextCode;
         while (node)
         {
@@ -12,7 +12,7 @@ void gen(Node *node)
             printf("  pop rax\n");
             node = node->nextCode;
         }
-        DEBUG_PRINT("# end block state\n");
+        DEBUG_PRINT("\n# end block state\n");
         return;
     }
     if (node->kind == ND_IF)
@@ -47,14 +47,14 @@ void gen(Node *node)
         return;
     case ND_LVAR:
         genLval(node);
-        DEBUG_PRINT("# start local variable\n");
+        DEBUG_PRINT("\n# start local variable\n");
         printf("  pop rax\n");
         printf("  mov rax, [rax]\n");
         printf("  push rax\n");
-        DEBUG_PRINT("# end local variable\n");
+        DEBUG_PRINT("\n# end local variable\n");
         return;
     case ND_ASSIGN:
-        DEBUG_PRINT("#代入開始\n");
+        DEBUG_PRINT("\n# start assign state\n");
         genLval(node->left);
         gen(node->right);
 
@@ -62,7 +62,7 @@ void gen(Node *node)
         printf("  pop rax\n");
         printf("  mov [rax], rdi\n");
         printf("  push rdi\n");
-        DEBUG_PRINT("#代入ここまで\n");
+        DEBUG_PRINT("\n# end assign state\n");
         return;
     }
     gen(node->left);
