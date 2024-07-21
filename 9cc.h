@@ -169,6 +169,7 @@ Node *unary();      //("+" |"-")? primary
 Node *primary();    // num|ident|"("expr")"
                     // 優先度高
 
+void genExpr(Node *node);
 void genIf(Node *node);
 void genWhile(Node *node);
 void genFor(Node *node);

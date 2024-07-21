@@ -71,6 +71,13 @@ void gen(Node *node)
     printf("  pop rdi\n");
     printf("  pop rax\n");
 
+    genExpr(node);
+
+    printf("  push rax\n");
+}
+
+void genExpr(Node *node)
+{
     switch (node->kind)
     {
     case ND_ADD:
@@ -111,9 +118,7 @@ void gen(Node *node)
             "  movzb rax, al\n");
         break;
     }
-    printf("  push rax\n");
 }
-
 void genLval(Node *node)
 {
     if (node->kind != ND_LVAR)
