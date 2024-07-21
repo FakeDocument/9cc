@@ -324,7 +324,7 @@ Node *primary()
     expect(")"); //)は閉じないとおかしい
     return node;
   }
-  if (peekIdent())
+  if (peekByTokenKind(TK_IDENT))
   {
     return newNodeIdent(expectIdent());
   }
