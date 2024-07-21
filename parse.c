@@ -326,7 +326,13 @@ Node *primary()
   }
   if (peekByTokenKind(TK_IDENT))
   {
-    return newNodeIdent(expectIdent());
+    if (!consume("("))
+    {
+      // 変数の場合
+      return newNodeIdent(expectIdent());
+    }
+    // 関数の場合
+    expect(")");
   }
   return newNodeNum(expectNumber());
 }
