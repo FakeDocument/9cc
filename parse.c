@@ -13,8 +13,6 @@ LoVar *findLoVar(Token *tkn)
   }
   for (LoVar *crnt = loVarList; crnt; crnt = crnt->next)
   {
-    DEBUG_PRINT("#crnt->str=%s\n", crnt->str);
-    DEBUG_PRINT("#len=%d\n", crnt->len);
     if (tkn->len == crnt->len && !memcmp(tkn->str, crnt->str, crnt->len))
     {
       return crnt;
@@ -55,9 +53,7 @@ Node *newNodeIdent(Token *tkn)
   Node *node = (Node *)calloc(1, sizeof(Node));
   node->kind = ND_LVAR;
 
-  DEBUG_PRINT("#変数：%s\n", tkn->str);
   LoVar *lovar = findLoVar(tkn);
-  DEBUG_PRINT("#変数あったかな？：%s\n\n", lovar ? "あった" : "なかった");
   if (!lovar)
   {
     // 変数新規作成
